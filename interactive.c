@@ -1,11 +1,28 @@
 /**
- * @file   interactive.c
- * @author Marc Zimmermann (tooreht@gmail.com)
- * @date   December, 2012
- * @brief  Interactive testing of doubly linked list.
+ *  Implementation of a doubly linked list
  *
- * This programm reads command lines from stdin and executes them.
- * It's purpose is to interactively test the implementation of the data structure.
+ *	@file   interactive.c
+ *	@author Marc Zimmermann (tooreht@gmail.com)
+ *	@date   December, 2012
+ *	@brief  Interactive testing of doubly linked list.
+ *
+ *	This programm reads command lines from stdin and executes them.
+ *	It's purpose is to interactively test the implementation of the data structure.
+ *
+ *  Copyright (C) 2012  Marc Zimmermann (tooreht@gmail.com)
+ *
+ *  This program is free software: you can redistribute it and/or modify
+ *  it under the terms of the GNU General Public License as published by
+ *  the Free Software Foundation, either version 3 of the License, or
+ *  (at your option) any later version.
+ *
+ *  This program is distributed in the hope that it will be useful,
+ *  but WITHOUT ANY WARRANTY; without even the implied warranty of
+ *  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ *  GNU General Public License for more details.
+ *
+ *  You should have received a copy of the GNU General Public License
+ *  along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
 #include <string.h>
@@ -14,7 +31,7 @@
 #include "dll.c"
 
 DLL *list;
-int *a1, *a2;
+int *d1, *d2;
 
 /**
  * The data pointer is stored as a void pointer in each node of the list.
@@ -89,22 +106,22 @@ void usage(void)
 {
 	puts("Usage:");
 	puts("");
-	puts("print (p)\tprints the list");
-	puts("info\t\tprints list info");
-	puts("reverse\t\treverses the list");
-	puts("sort\t\tsorts the list in ascending order");
-	puts("delf\t\tdelete first node");
-	puts("dell\t\tdelete last node");
-	puts("destroy\t\tdeletes the whole list");
+	puts("print (p)\tprint the list");
+	puts("info\t\tprint list info");
+	puts("reverse\t\treverse the list");
+	puts("sort\t\tsort the list in ascending order");
+	puts("delf\t\tdelete the first node");
+	puts("dell\t\tdelete the last node");
+	puts("destroy\t\tdelete the whole list");
 	puts("");
-	puts("beg 1\t\tadds an integer to the beginning of the list");
+	puts("beg 1\t\tadd an integer to the beginning of the list");
 	puts("end 1\t\tadds an integer to the end of the list");
-	puts("find 1\t\tsearches after an integer in the list");
-	puts("del 1\t\tdeletes an integer in the list");
-	puts("performance 10\tdoes some performance testing with a number of elements");
+	puts("find 1\t\tsearche after an integer in the list");
+	puts("del 1\t\tdelete an integer in the list");
+	puts("performance 10\tdo some performance testing with a number of elements");
 	puts("");
-	puts("after 1 2\tadds integer 2 after integer 1 in the list");
-	puts("fill 10 20\tfills the list with integers from 10 to 20");
+	puts("after 1 2\tadd integer 2 after integer 1 in the list");
+	puts("fill 10 20\tfill the list with integers from 10 to 20");
 }
 
 /**
@@ -182,34 +199,114 @@ void fill(int beg, int end)
 }
 
 /**
- * Extracts the commands out of a line and executes them.
+ * Read from a file and print line by line.
  *
- * @param char *line: char pointer to the line
- * @param size_t *nbytes: numbers of allocated charbytes
+ * @param const char *file: file name
  * @return void
  */
-void parse_line(char *line, size_t *nbytes)
+void read_file(const char *file)
 {
-	//printf("nbytes: %ld %s\n", *nbytes, line);
+	FILE *fp; /* declare the file pointer */
+	fp = fopen(file, "rt"); /* open the file for reading */
 
-	// if(command[*nbytes-1] == '\n')
-	// 	command[*nbytes-1] = '\0';
+	if(fp == NULL)
+	{
+		printf("Cannot open file '%s'\n", file);
+		exit(1);
+	}
+
+	size_t bytes_read;
+	size_t nbytes = 8;
+
+	char *line = (char *) malloc(nbytes + 1);
+
+	while( (bytes_read = getline(&line, &nbytes, fp)) != -1)
+	{
+		printf("%s", line);
+	}
+
+	fclose(fp);  /* close the file prior to exiting the routine */
+}
+
+/**
+ * Shows programm warranty information.
+ *
+ * @param void
+ * @return void
+ */
+void show_warranty(void)
+{
+	puts("15. Disclaimer of Warranty.");
+	puts("");
+	puts("THERE IS NO WARRANTY FOR THE PROGRAM, TO THE EXTENT PERMITTED BY");
+	puts("APPLICABLE LAW.  EXCEPT WHEN OTHERWISE STATED IN WRITING THE COPYRIGHT");
+	puts("HOLDERS AND/OR OTHER PARTIES PROVIDE THE PROGRAM \"AS IS\" WITHOUT WARRANTY");
+	puts("OF ANY KIND, EITHER EXPRESSED OR IMPLIED, INCLUDING, BUT NOT LIMITED TO,");
+	puts("THE IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR");
+	puts("PURPOSE.  THE ENTIRE RISK AS TO THE QUALITY AND PERFORMANCE OF THE PROGRAM");
+	puts("IS WITH YOU.  SHOULD THE PROGRAM PROVE DEFECTIVE, YOU ASSUME THE COST OF");
+	puts("ALL NECESSARY SERVICING, REPAIR OR CORRECTION.");
+}
+
+/**
+ * Shows programm conditions.
+ *
+ * @param void
+ * @return void
+ */
+void show_conditions(void)
+{
+	read_file("LICENSE.md");
+}
+
+/**
+ * Executes gpl commands.
+ *
+ * @param int nargs: number of arguments
+ * @param char *command: pointer to command string
+ * @param char option: option
+ * @return void
+ */
+void execute_gpl(int nargs, char *command, char option)
+{
+	switch(nargs)
+	{
+		case 2:
+			if(!strcmp(command, "show"))
+			{
+				if(option == 'w')
+					show_warranty();
+				else if(option == 'c')
+					show_conditions();
+			}
+		break;
+	}
+}
+
+/**
+ * Executes dll commands.
+ *
+ * @param int nargs: number of arguments
+ * @param char *command: pointer to command string
+ * @param int arg1: argument one
+ * @param int arg2: argument two
+ * @return void
+ */
+void execute_dll(int nargs, char *command, int arg1, int arg2)
+{
+	d1 = malloc(sizeof(int));
+	d2 = malloc(sizeof(int));
+
+	*d1 = arg1;
+	*d2 = arg2;
+
+	void *a1, *a2;
+
+	a1 = d1;
+	a2 = d2;
 
 	if(!list)
 		list = dll_create();
-
-	char command[10];
-	void *arg1, *arg2;
-	
-	a1 = malloc(sizeof(int));
-	a2 = malloc(sizeof(int));
-
-	int nargs = sscanf(line, "%s %d %d", command, a1, a2);
-	
-	arg1 = a1;
-	arg2 = a2;
-
-	// printf("%d %s %d %d\n", nargs, command, *a1, *a2);
 
 	switch(nargs)
 	{
@@ -246,6 +343,10 @@ void parse_line(char *line, size_t *nbytes)
 				dll_destroy(list, free_data);
 				list = NULL;
 			}
+			else if(!strcmp(command, "show"))
+			{
+				// do absolutely nothing
+			}
 			else
 			{
 				usage();
@@ -254,27 +355,35 @@ void parse_line(char *line, size_t *nbytes)
 		case 2:
 			if(!strcmp(command, "beg"))
 			{
-				dll_add_begin(list, arg1);
+				dll_add_begin(list, a1);
 			}
 			else if(!strcmp(command, "end"))
 			{
-				dll_add_end(list, arg1);
+				dll_add_end(list, a1);
 			}
 			else if(!strcmp(command, "find"))
 			{
-				Node *found = dll_search(list, arg1, compare);
+				Node *found = dll_search(list, a1, compare);
 				if(found)
 					print_data(found->data);
 				else
-					printf("Node with data %d couldn't be found\n", *a1);
+					printf("Node with data %d couldn't be found\n", arg1);
 			}
 			else if(!strcmp(command, "del"))
 			{
-				dll_delete(list, arg1, compare, free_data);
+				dll_delete(list, a1, compare, free_data);
 			}
 			else if(!strcmp(command, "performance"))
 			{
-				performance(*a1);
+				performance(arg1);
+			}
+			else if(!strcmp(command, "show"))
+			{
+				char option = (int) arg1;
+				if(option == 'w')
+					show_warranty();
+				else if(option == 'c')
+					show_conditions();
 			}
 			else
 			{
@@ -286,26 +395,48 @@ void parse_line(char *line, size_t *nbytes)
 			{
 				if(list->head)
 				{
-					Node *n = dll_search(list, arg1, compare);
-					list->curr = dll_add_after(list, n, arg2);
+					Node *n = dll_search(list, a1, compare);
+					list->curr = dll_add_after(list, n, a2);
 				}
 				else
 				{
-					list->head = dll_add_begin(list, arg2);
+					list->head = dll_add_begin(list, a2);
 				}
 			}
 			else if(!strcmp(command, "fill"))
 			{
-				fill(*a1, *a2);
+				fill(arg1, arg2);
 			}
 			else
 			{
 				usage();
 			}
 			break;
-		default:
-			usage();
+		default: usage();
 	}
+}
+
+/**
+ * Extracts the commands out of a line and executes them.
+ *
+ * @param char *line: char pointer to the line
+ * @param size_t *nbytes: numbers of allocated charbytes
+ * @return void
+ */
+void parse_line(char *line, size_t *nbytes)
+{
+	int nargs;
+	char command[*nbytes], c;
+
+	int a1 = 0, a2 = 0;
+
+	nargs = sscanf(line, "%s %d %d", command, &a1, &a2);
+
+	execute_dll(nargs, command, a1, a2);
+
+	nargs = sscanf(line, "%s %c", command, &c);
+
+	execute_gpl(nargs, command, c);
 }
 
 /**
@@ -324,6 +455,11 @@ int main(int argc, char const *argv[])
 
 	char *line = (char *) malloc(nbytes + 1);
 
+	puts("---------- doublyLinkedList  Copyright (C) 2012  Marc Zimmermann ----------");
+	puts("This program comes with ABSOLUTELY NO WARRANTY; for details type `show w'.");
+	puts("This is free software, and you are welcome to redistribute it");
+	puts("under certain conditions; type `show c' for details.");
+	puts("");
 	puts("Enter a command:");
 
 	while( (bytes_read = getline(&line, &nbytes, stdin)) != -1)
@@ -331,10 +467,10 @@ int main(int argc, char const *argv[])
 		parse_line(line, &bytes_read);
 	}
 
-	free(line);
+	free(d1);
+	free(d2);
 
-	free(a1);
-	free(a2);
+	free(line);
 
 	dll_destroy(list, free_data);
 
