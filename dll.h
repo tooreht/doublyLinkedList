@@ -1,5 +1,5 @@
 /**
- *  Implementation of a doubly linked list
+ *  doublyLinkedList
  *
  * 	@file   dll.h
  * 	@author Marc Zimmermann (tooreht@gmail.com)

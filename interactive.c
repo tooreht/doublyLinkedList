@@ -1,5 +1,5 @@
 /**
- *  Implementation of a doubly linked list
+ *  doublyLinkedList
  *
  *	@file   interactive.c
  *	@author Marc Zimmermann (tooreht@gmail.com)

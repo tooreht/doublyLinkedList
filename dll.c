@@ -1,5 +1,5 @@
 /**
- *  Implementation of a doubly linked list
+ *  doublyLinkedList
  *
  * 	@file   dll.c
  * 	@author Marc Zimmermann (tooreht@gmail.com)
@@ -334,7 +334,16 @@ void dll_delete_first(DLL *list, void (*free_data)(void*) )
 	assert(free_data);
 
 	Node *del = list->head;
-	list->head = del->next->prev = del->next;
+
+	if(list->head == list->tail)
+	{
+		list->head = list->tail = NULL;
+	}
+	else
+	{
+		list->head = del->next;
+		list->head->prev = NULL;
+	}
 
 	dll_free_node(del, free_data);
 	list->size--;
@@ -355,7 +364,16 @@ void dll_delete_last(DLL *list, void (*free_data)(void*) )
 	assert(free_data);
 
 	Node *del = list->tail;
-	list->tail = del->prev->next = del->prev;
+
+	if(list->head == list->tail)
+	{
+		list->head = list->tail = NULL;
+	}
+	else
+	{
+		list->tail = del->prev;
+		list->tail->next = NULL;
+	}
 
 	dll_free_node(del, free_data);
 	list->size--;
