@@ -4,6 +4,14 @@ This is an implementation of a doubly linked list in the C programming language.
 
 The current features of my implementation are:
 
+- head
+- tail
+- curr
+- size
+- has_next
+- next
+- has_prev
+- prev
 - create dll
 - traverse dll
 - search dll
@@ -21,4 +29,4 @@ The current features of my implementation are:
 - sort dll
 - print dll
 
-The file interactive.c provides a little command line like interface to test the features
+The file interactive.c provides a little command line like interface to test the features.
