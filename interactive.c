@@ -34,69 +34,6 @@ DLL *list;
 int *d1, *d2;
 
 /**
- * The data pointer is stored as a void pointer in each node of the list.
- * Thus three callback functions are needed to handle the generic
- * (userdefined) data structure:
- * 
- * - printing the data
- * - freeing the data from memory
- * - comparing the data structures
- *
- * The function names don't matter, but the return types and parameters.
- *
- * In this programm simple integers are used:
- */
-
-/**
- * This callback function is feed with the data pointer to print the data.
- * To access the integer, the void pointer is casted to an int pointer
- * and then dereferenced.
- *
- * @param void* data
- * @return void
- */
-void print_data(void *data)
-{
-	printf("%d\n", *(int *) data);
-}
-
-/**
- * This callback function is feed with the data pointer to free the data.
- *
- * @param void* data
- * @return void
- */
-void free_data(void *data)
-{
-	free(data);
-}
-
-/**
- * This callback function is feed with two data pointers.
- * To access the integers, the void pointer is casted to an int pointer
- * and then dereferenced.
- *
- * @param void* first_arg
- * @param void* second_arg
- * @return int
- * 	-1: if first is greater than second
- * 	 0: if first and second are equal
- * 	 1: if first is lower than second
- */
-int compare(void *first_arg, void *second_arg)
-{
-	int first = *(int *) first_arg;
-	int second = *(int *) second_arg;
-
-	if(first < second)
-		return -1;
-	else if(first == second)
-		return 0;
-	else
-		return 1;
-}
-
-/**
  * Prints the usage options.
  *
  * @param void
@@ -104,10 +41,20 @@ int compare(void *first_arg, void *second_arg)
  */
 void usage(void)
 {
-	puts("Usage:");
+	puts("doublyLinkedList usage:");
 	puts("");
+	puts("head\t\tprint the head");
+	puts("tail\t\tprint the tail");
+	puts("curr\t\tprint the current node");
+	puts("size\t\tprint the size");
+	puts("next\t\tprint the next node");
+	puts("prev\t\tprint the previous node");
 	puts("print (p)\tprint the list");
 	puts("info\t\tprint list info");
+	puts("initnext\tinitialize list for 'next' iterator");
+	puts("hasnext\t\tprint if list has a next node");
+	puts("initprev\tinitialize list for 'prev' iterator");
+	puts("hasprev\t\tprint if list has a previous node");
 	puts("reverse\t\treverse the list");
 	puts("sort\t\tsort the list in ascending order");
 	puts("delf\t\tdelete the first node");
@@ -122,80 +69,6 @@ void usage(void)
 	puts("");
 	puts("after 1 2\tadd integer 2 after integer 1 in the list");
 	puts("fill 10 20\tfill the list with integers from 10 to 20");
-}
-
-/**
- * Performs some tests with a dynamic number of elements.
- *
- * @param int elements: number of elements
- * @return void
- */
-void performance(int elements)
-{
-	clock_t start = clock();
-
-	int *integer;
-	void *data;
-
-	int i;
-	for(i = 0; i < elements; i++)
-	{
-		integer = malloc(sizeof(int));
-		*integer = i;
-		data = integer;
-		dll_add_begin(list, data);
-		// dll_add_end(list, data);
-		// dll_add_after(list, list->current, data);
-	}
-
-	// dll_print(list, print_data);
-	// dll_sort(list, compare);
-	dll_reverse(list);
-	// dll_print(list, print_data);
-
-	for(i = 0; i < elements; i++)
-	{
-		data = &i;
-		dll_delete(list, data, compare, free_data);
-		// dll_delete_first(list, free_data);
-	}
-
-	dll_print(list, print_data);
-
-	double elapsed = ( (double)clock() - start ) / CLOCKS_PER_SEC;
-	printf("Performance finished in %f s\n", elapsed);
-}
-
-/**
- * Fills the list with a specific range of integers.
- *
- * @param int beg: beginning of range
- * @param int end: end of range
- * @return void
- */
-void fill(int beg, int end)
-{
-	if(beg > end)
-		return;
-
-	clock_t start = clock();
-
-	int *integer;
-	void *data;
-
-	int i;
-	for(i = beg; i <= end; i++)
-	{
-		integer = malloc(sizeof(int));
-		*integer = i;
-		data = integer;
-		// dll_add_begin(list, data);
-		dll_add_end(list, data);
-		// dll_add_after(list, list->current, data);
-	}
-
-	double elapsed = ( (double)clock() - start ) / CLOCKS_PER_SEC;
-	printf("Filling finished in %f s\n", elapsed);
 }
 
 /**
@@ -283,6 +156,185 @@ void execute_gpl(int nargs, char *command, char option)
 	}
 }
 
+
+
+
+/* =========================== User defined functions =========================== */
+
+
+
+
+/**
+ * The data pointer is stored as a void pointer in each node of the list.
+ * Thus three callback functions are needed to handle the generic
+ * (userdefined) data structure:
+ * 
+ * - printing the data
+ * - freeing the data from memory
+ * - comparing the data structures
+ *
+ * The function names don't matter, but the return types and parameters.
+ *
+ * In this programm simple integers are used:
+ */
+
+/**
+ * This callback function is feed with the data pointer to print the data.
+ * To access the integer, the void pointer is casted to an int pointer
+ * and then dereferenced.
+ *
+ * @param void* data
+ * @return void
+ */
+void print_data(void *data)
+{
+	printf("%d\n", *(int *) data);
+}
+
+/**
+ * This callback function is feed with the data pointer to free the data.
+ *
+ * @param void* data
+ * @return void
+ */
+void free_data(void *data)
+{
+	free(data);
+}
+
+/**
+ * This callback function is feed with two data pointers.
+ * To access the integers, the void pointer is casted to an int pointer
+ * and then dereferenced.
+ *
+ * @param void* first_arg
+ * @param void* second_arg
+ * @return int
+ * 	-1: if first is greater than second
+ * 	 0: if first and second are equal
+ * 	 1: if first is lower than second
+ */
+int compare(void *first_arg, void *second_arg)
+{
+	int first = *(int *) first_arg;
+	int second = *(int *) second_arg;
+
+	if(first < second)
+		return -1;
+	else if(first == second)
+		return 0;
+	else
+		return 1;
+}
+
+/**
+ * Performs some tests with a dynamic number of elements.
+ *
+ * @param int elements: number of elements
+ * @return void
+ */
+void performance(int elements)
+{
+	clock_t start = clock();
+
+	int *integer;
+	void *data;
+
+	puts("fill dll with for loop 'conventional'");
+	int i;
+	for(i = 0; i < elements; i++)
+	{
+		integer = malloc(sizeof(int));
+		*integer = i;
+		data = integer;
+		dll_add_begin(list, data);
+		// dll_add_end(list, data);
+		// dll_add_after(list, list->current, data);
+	}
+
+	puts("print dll with while loop 'iterator' head to tail");
+	dll_head(list);
+	while(dll_has_next(list))
+	{
+		printf("%d\n", *(int*)list->curr->data);
+		dll_next(list);
+	}
+	
+	// puts("sort");
+	// dll_sort(list, compare);
+	puts("reverse");
+	dll_reverse(list);
+	// dll_print(list, print_data);
+
+	puts("print dll with for loop 'iterator' tail to head");
+	Node *n = NULL;
+	for(n = dll_tail(list); dll_has_prev(list); n = dll_prev(list))
+	{
+		printf("%d\n", *(int*)n->data);
+	}
+
+	// puts("delete dll with for loop 'conventional' (dll_delete is slow because of searching data)");
+	// for(i = 0; i < elements; i++)
+	// {
+	// 	data = &i;
+	// 	dll_delete(list, data, compare, free_data);
+	// }
+
+	// puts("delete dll with while loop 'iterator' head to tail");
+	// dll_head(list);
+	// while(dll_has_next(list))
+	// {
+	// 	dll_next(list);
+	// 	dll_delete_first(list, free_data);
+	// }
+
+	puts("delete dll with while loop 'iterator' tail to head");
+	dll_tail(list);
+	while(dll_has_prev(list))
+	{
+		dll_prev(list);
+		dll_delete_last(list, free_data);
+	}
+
+	puts("print list");
+	dll_print(list, print_data);
+
+	double elapsed = ( (double)clock() - start ) / CLOCKS_PER_SEC;
+	printf("Performance with %d elements finished in %f s\n", elements, elapsed);
+}
+
+/**
+ * Fills the list with a specific range of integers.
+ *
+ * @param int beg: beginning of range
+ * @param int end: end of range
+ * @return void
+ */
+void fill(int beg, int end)
+{
+	if(beg > end)
+		return;
+
+	clock_t start = clock();
+
+	int *integer;
+	void *data;
+
+	int i;
+	for(i = beg; i <= end; i++)
+	{
+		integer = malloc(sizeof(int));
+		*integer = i;
+		data = integer;
+		// dll_add_begin(list, data);
+		dll_add_end(list, data);
+		// dll_add_after(list, list->current, data);
+	}
+
+	double elapsed = ( (double)clock() - start ) / CLOCKS_PER_SEC;
+	printf("Filling finished in %f s\n", elapsed);
+}
+
 /**
  * Executes dll commands.
  *
@@ -311,7 +363,50 @@ void execute_dll(int nargs, char *command, int arg1, int arg2)
 	switch(nargs)
 	{
 		case 1:
-			if(!strcmp(command, "print") || !strcmp(command, "p"))
+			if(!strcmp(command, "head"))
+			{
+				Node *head = dll_head(list);
+				printf("head %p %d\n", head, head ? *(int*)head->data : -1);
+			}
+			else if(!strcmp(command, "tail"))
+			{
+				Node *tail = dll_tail(list);
+				printf("tail %p %d\n", tail, tail ? *(int*)tail->data : -1);
+			}
+			else if(!strcmp(command, "curr"))
+			{
+				Node *curr = dll_curr(list);
+				printf("curr %p %d\n", curr, curr ? *(int*)curr->data : -1);
+			}
+			else if(!strcmp(command, "size"))
+			{
+				printf("size %d\n", dll_size(list));
+			}
+			else if(!strcmp(command, "hasnext"))
+			{
+				if(dll_has_next(list))
+					puts("yes");
+				else
+					puts("no");
+			}
+			else if(!strcmp(command, "next"))
+			{
+				Node *next = dll_next(list);
+				printf("next %p %d\n", next, next ? *(int*)next->data : -1);
+			}
+			else if(!strcmp(command, "hasprev"))
+			{
+				if(dll_has_prev(list))
+					puts("yes");
+				else
+					puts("no");
+			}
+			else if(!strcmp(command, "prev"))
+			{
+				Node *prev = dll_prev(list);
+				printf("prev %p %d\n", prev, prev ? *(int*)prev->data : -1);
+			}
+			else if(!strcmp(command, "print") || !strcmp(command, "p"))
 			{
 				dll_print(list, print_data);
 			}
@@ -320,7 +415,7 @@ void execute_dll(int nargs, char *command, int arg1, int arg2)
 				printf("head\t %p %d\n", list->head, list->head ? *(int*)list->head->data : -1);
 				printf("tail\t %p %d\n", list->tail, list->tail ? *(int*)list->tail->data : -1);
 				printf("curr\t %p %d\n", list->curr, list->curr ? *(int*)list->curr->data : -1);
-				printf("size\t %d\n", list->size);
+				printf("size\t %d\n", dll_size(list));
 			}
 			else if(!strcmp(command, "reverse"))
 			{
@@ -376,14 +471,6 @@ void execute_dll(int nargs, char *command, int arg1, int arg2)
 			else if(!strcmp(command, "performance"))
 			{
 				performance(arg1);
-			}
-			else if(!strcmp(command, "show"))
-			{
-				char option = (int) arg1;
-				if(option == 'w')
-					show_warranty();
-				else if(option == 'c')
-					show_conditions();
 			}
 			else
 			{

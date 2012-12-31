@@ -40,6 +40,14 @@ typedef struct
 } DLL;
 
 DLL* dll_create();
+Node* dll_head(DLL *list);
+Node* dll_tail(DLL *list);
+Node* dll_curr(DLL *list);
+unsigned int dll_size(DLL *list);
+int dll_has_next(DLL *list);
+Node* dll_next(DLL *list);
+int dll_has_prev(DLL *list);
+Node* dll_prev(DLL *list);
 void dll_traverse(DLL *list, void (*callback)(void*) );
 int dll_contains(DLL *list, Node *node);
 Node* dll_search(DLL *list, void *data, int (*compare)(void*, void*) );

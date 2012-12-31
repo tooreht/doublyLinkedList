@@ -42,10 +42,107 @@
 DLL* dll_create(void)
 {
 	DLL *new = malloc(sizeof(DLL));
-	new->head = NULL;
-	new->tail = NULL;
+	new->head = new->tail = new->curr = NULL;
 	new->size = 0;
 	return new;
+}
+
+/**
+ * Returns the head.
+ *
+ * @param DLL *list: pointer to the doubly linked list
+ * @return Node*: tail node
+ */
+Node* dll_head(DLL *list)
+{
+	return list->curr = list->head;
+}
+
+/**
+ * Returns the tail.
+ *
+ * @param DLL *list: pointer to the doubly linked list
+ * @return Node*: tail node
+ */
+Node* dll_tail(DLL *list)
+{
+	return list->curr = list->tail;
+}
+
+/**
+ * Returns the current node.
+ *
+ * @param DLL *list: pointer to the doubly linked list
+ * @return Node*: current node
+ */
+Node* dll_curr(DLL *list)
+{
+	return list->curr;
+}
+
+/**
+ * Returns the size of the doubly linked list.
+ *
+ * @param DLL *list: pointer to the doubly linked list
+ * @return unsigned int: size
+ */
+unsigned int dll_size(DLL *list)
+{
+	return list->size;
+}
+
+/**
+ * Checks if the doubly linked list has a next node.
+ *
+ * @param DLL *list: pointer to the doubly linked list
+ * @return int: has next
+ */
+int dll_has_next(DLL *list)
+{
+	return list->curr != NULL; // && list->curr->next;
+}
+
+/**
+ * Returns the next node.
+ * Use dll_head to initialize list->curr as head
+ *
+ * @param DLL *list: pointer to the doubly linked list
+ * @return Node*: next node
+ */
+Node* dll_next(DLL *list)
+{
+	if(list->curr && list->curr->next)
+		list->curr = list->curr->next;
+	else
+		list->curr = NULL;
+	return list->curr;
+}
+
+/**
+ * Checks if the doubly linked list has a previous node.
+ *
+ * @param DLL *list: pointer to the doubly linked list
+ * @return int: has previous
+ */
+int dll_has_prev(DLL *list)
+{
+	return list->curr != NULL;
+}
+
+/**
+ * Returns the previous node.
+ * Use dll_tail to initialize list->curr as tail
+ *
+ * @param DLL *list: pointer to the doubly linked list
+ * @return Node*: previous node
+ */
+Node* dll_prev(DLL *list)
+{
+	if(list->curr && list->curr->prev)
+		list->curr = list->curr->prev;
+	else
+		list->curr = NULL;
+	return list->curr;
 }
 
 /**
@@ -401,12 +498,12 @@ void dll_destroy(DLL *list, void (*free_data)(void*) )
 
 	if(list)
 	{
-		list->curr = list->head;
+		Node *del = list->head;
 
-		while(list->curr)
+		while(del)
 		{
-			dll_free_node(list->curr, free_data);
-			list->curr = list->curr->next;
+			dll_free_node(del, free_data);
+			del = del->next;
 		}
 		free(list);
 		list->head = list->tail = NULL;
