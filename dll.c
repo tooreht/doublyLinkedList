@@ -113,21 +113,24 @@ Node* dll_search(DLL *list, void *data, int (*compare)(void*, void*) )
 	assert(data);
 	assert(compare);
 
-	Node *i = list->head, *j = list->tail;
-
-	while(i != j && i != j->next)
+	if(list->head && list->tail)
 	{
-		if(!compare(i->data, data))
-			return i;
+		Node *i = list->head, *j = list->tail;
+
+		while(i != j && i != j->next)
+		{
+			if(!compare(i->data, data))
+				return i;
+			if(!compare(j->data, data))
+				return j;
+
+			i = i->next;
+			j = j->prev;
+		}
+
 		if(!compare(j->data, data))
 			return j;
-
-		i = i->next;
-		j = j->prev;
 	}
-
-	if(!compare(j->data, data))
-		return j;
 
 	return NULL;
 }
@@ -249,10 +252,8 @@ Node* dll_add_after(DLL *list, Node *node, void *data)
 		list->size++;
 		return new;
 	}
-	else
-	{
-		return dll_add_first_node(list, data);
-	}
+
+	return NULL;
 }
 
 /**
@@ -335,18 +336,21 @@ void dll_delete_first(DLL *list, void (*free_data)(void*) )
 
 	Node *del = list->head;
 
-	if(list->head == list->tail)
+	if(list->head && list->tail)
 	{
-		list->head = list->tail = NULL;
-	}
-	else
-	{
-		list->head = del->next;
-		list->head->prev = NULL;
-	}
+		if(list->head == list->tail)
+		{
+			list->head = list->tail = NULL;
+		}
+		else
+		{
+			list->head = del->next;
+			list->head->prev = NULL;
+		}
 
-	dll_free_node(del, free_data);
-	list->size--;
+		dll_free_node(del, free_data);
+		list->size--;
+	}
 }
 
 /**
@@ -365,18 +369,21 @@ void dll_delete_last(DLL *list, void (*free_data)(void*) )
 
 	Node *del = list->tail;
 
-	if(list->head == list->tail)
+	if(list->head && list->tail)
 	{
-		list->head = list->tail = NULL;
-	}
-	else
-	{
-		list->tail = del->prev;
-		list->tail->next = NULL;
-	}
+		if(list->head == list->tail)
+		{
+			list->head = list->tail = NULL;
+		}
+		else
+		{
+			list->tail = del->prev;
+			list->tail->next = NULL;
+		}
 
-	dll_free_node(del, free_data);
-	list->size--;
+		dll_free_node(del, free_data);
+		list->size--;
+	}
 }
 
 /**
@@ -434,7 +441,7 @@ void dll_reverse(DLL *list)
  * Sorts the list.
  *
  * Uses a callback function to compare the data strucures.
- * The order of the nodes is defined trough the compare function.
+ * The order of the nodes is defined through the compare function.
  *
  * @param DLL *list: pointer to the doubly linked list
  * @param int (*compare)(void*, void*): callback function compare

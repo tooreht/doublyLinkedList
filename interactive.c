@@ -393,15 +393,11 @@ void execute_dll(int nargs, char *command, int arg1, int arg2)
 		case 3:
 			if(!strcmp(command, "after"))
 			{
-				if(list->head)
-				{
-					Node *n = dll_search(list, a1, compare);
+				Node *n = dll_search(list, a1, compare);
+				if(n)
 					list->curr = dll_add_after(list, n, a2);
-				}
 				else
-				{
-					list->head = dll_add_begin(list, a2);
-				}
+					printf("Node with data %d couldn't be found\n", arg1);
 			}
 			else if(!strcmp(command, "fill"))
 			{
