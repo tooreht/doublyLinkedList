@@ -240,7 +240,7 @@ void performance(int elements)
 	int *integer;
 	void *data;
 
-	puts("fill dll with for loop 'conventional'");
+	puts("fill dll with 'conventional' for loop");
 	int i;
 	for(i = 0; i < elements; i++)
 	{
@@ -252,7 +252,7 @@ void performance(int elements)
 		// dll_add_after(list, list->current, data);
 	}
 
-	puts("print dll with while loop 'iterator' head to tail");
+	puts("print dll with 'iterator' while loop head to tail");
 	dll_head(list);
 	while(dll_has_next(list))
 	{
@@ -266,7 +266,7 @@ void performance(int elements)
 	dll_reverse(list);
 	// dll_print(list, print_data);
 
-	puts("print dll with for loop 'iterator' tail to head");
+	puts("print dll with 'iterator' for loop tail to head");
 	Node *n = NULL;
 	for(n = dll_tail(list); dll_has_prev(list); n = dll_prev(list))
 	{
@@ -288,7 +288,7 @@ void performance(int elements)
 	// 	dll_delete_first(list, free_data);
 	// }
 
-	puts("delete dll with while loop 'iterator' tail to head");
+	puts("delete dll with 'iterator' while loop tail to head");
 	dll_tail(list);
 	while(dll_has_prev(list))
 	{

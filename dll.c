@@ -42,8 +42,15 @@
 DLL* dll_create(void)
 {
 	DLL *new = malloc(sizeof(DLL));
-	new->head = new->tail = new->curr = NULL;
-	new->size = 0;
+	if(new)
+	{
+		new->head = new->tail = new->curr = NULL;
+		new->size = 0;
+	}
+	else
+	{
+		puts("ERROR: Out of memory");
+	}
 	return new;
 }
 
@@ -99,7 +106,7 @@ unsigned int dll_size(DLL *list)
  */
 int dll_has_next(DLL *list)
 {
-	return list->curr != NULL; // && list->curr->next;
+	return list->curr != NULL;
 }
 
 /**
@@ -112,10 +119,9 @@ int dll_has_next(DLL *list)
 Node* dll_next(DLL *list)
 {
 	if(list->curr && list->curr->next)
-		list->curr = list->curr->next;
+		return list->curr = list->curr->next;
 	else
-		list->curr = NULL;
-	return list->curr;
+		return list->curr = NULL;
 }
 
 /**
@@ -139,10 +145,9 @@ int dll_has_prev(DLL *list)
 Node* dll_prev(DLL *list)
 {
 	if(list->curr && list->curr->prev)
-		list->curr = list->curr->prev;
+		return list->curr = list->curr->prev;
 	else
-		list->curr = NULL;
-	return list->curr;
+		return list->curr = NULL;
 }
 
 /**
@@ -158,12 +163,12 @@ void dll_traverse(DLL *list, void (*callback)(void*) )
 	assert(list);
 	assert(callback);
 
-	Node *i = list->head;
+	Node *n = list->head;
 
-	while(i)
+	while(n)
 	{
-		callback(i->data); // or (*callback)(i);
-		i = i->next;
+		callback(n->data); // or (*callback)(i);
+		n = n->next;
 	}
 }
 
@@ -243,8 +248,15 @@ Node* dll_create_node(void *data)
 	assert(data);
 
 	Node *new = malloc(sizeof(Node));
-	new->data = data;
-	new->prev = new->next = NULL;
+	if (new)
+	{
+		new->data = data;
+		new->prev = new->next = NULL;
+	}
+	else
+	{
+		puts("ERROR: Out of memory");
+	}
 	return new;
 }
 
@@ -276,21 +288,24 @@ Node* dll_add_begin(DLL *list, void *data)
 	assert(list);
 	assert(data);
 
-	Node *new = dll_create_node(data);
-
 	if(list->head)
 	{
-		Node *tmp = list->head;
-		new->next = tmp;
-		list->head = tmp->prev = new;
-		list->size++;
+		Node *new = dll_create_node(data);
+
+		if(new)
+		{
+			Node *tmp = list->head;
+			new->next = tmp;
+			list->head = tmp->prev = new;
+			list->size++;
+		}
+
+		return new;
 	}
 	else
 	{
 		return dll_add_first_node(list, data);
 	}
-
-	return new;
 }
 
 /**
@@ -305,21 +320,24 @@ Node* dll_add_end(DLL *list, void *data)
 	assert(list);
 	assert(data);
 
-	Node *new = dll_create_node(data);
-
 	if(list->tail)
 	{
-		Node *tmp = list->tail;
-		new->prev = tmp;
-		list->tail = tmp->next = new;
-		list->size++;
+		Node *new = dll_create_node(data);
+
+		if(new)
+		{
+			Node *tmp = list->tail;
+			new->prev = tmp;
+			list->tail = tmp->next = new;
+			list->size++;
+		}
+
+		return new;
 	}
 	else
 	{
 		return dll_add_first_node(list, data);
-	}
-	
-	return new;	
+	}	
 }
 
 /**
@@ -339,14 +357,19 @@ Node* dll_add_after(DLL *list, Node *node, void *data)
 	if(list->head && list->tail)
 	{
 		Node *new = dll_create_node(data);
-		new->prev = node;
-		new->next = node->next;
-		if(node == list->tail)
-			list->tail = new;
-		node->next = new;
-		if(new->next)
-			new->next->prev = new;
-		list->size++;
+
+		if(new)
+		{
+			new->prev = node;
+			new->next = node->next;
+			if(node == list->tail)
+				list->tail = new;
+			node->next = new;
+			if(new->next)
+				new->next->prev = new;
+			list->size++;
+		}
+
 		return new;
 	}
 
@@ -368,6 +391,7 @@ void dll_free_node(Node *node, void (*free_data)(void*) )
 	assert(free_data);
 
 	free_data(node->data);
+	node->prev = node->next = node->data = NULL;
 	free(node);
 }
 
@@ -498,16 +522,17 @@ void dll_destroy(DLL *list, void (*free_data)(void*) )
 
 	if(list)
 	{
-		Node *del = list->head;
+		Node *n = list->head;
 
-		while(del)
+		while(n)
 		{
+			Node *del = n;
+			n = n->next;
 			dll_free_node(del, free_data);
-			del = del->next;
 		}
-		free(list);
-		list->head = list->tail = NULL;
+		list->head = list->tail = list->curr = NULL;
 		list->size = 0;
+		free(list);
 	}
 }
 
