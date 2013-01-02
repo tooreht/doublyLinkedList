@@ -51,9 +51,7 @@ void usage(void)
 	puts("prev\t\tprint the previous node");
 	puts("print (p)\tprint the list");
 	puts("info\t\tprint list info");
-	puts("initnext\tinitialize list for 'next' iterator");
 	puts("hasnext\t\tprint if list has a next node");
-	puts("initprev\tinitialize list for 'prev' iterator");
 	puts("hasprev\t\tprint if list has a previous node");
 	puts("reverse\t\treverse the list");
 	puts("sort\t\tsort the list in ascending order");
@@ -67,6 +65,7 @@ void usage(void)
 	puts("del 1\t\tdelete an integer in the list");
 	puts("performance 10\tdo some performance testing with a number of elements");
 	puts("");
+	puts("before 1 2\tadd integer 2 before integer 1 in the list");
 	puts("after 1 2\tadd integer 2 after integer 1 in the list");
 	puts("fill 10 20\tfill the list with integers from 10 to 20");
 }
@@ -288,6 +287,11 @@ void performance(int elements)
 	// 	dll_delete_first(list, free_data);
 	// }
 
+	int bla = 1;
+	void *d = &bla;
+	Node *node = dll_search(list, d, compare);
+	printf("contains %d\n", dll_contains(list, node));
+
 	puts("delete dll with 'iterator' while loop tail to head");
 	dll_tail(list);
 	while(dll_has_prev(list))
@@ -366,21 +370,21 @@ void execute_dll(int nargs, char *command, int arg1, int arg2)
 			if(!strcmp(command, "head"))
 			{
 				Node *head = dll_head(list);
-				printf("head %p %d\n", head, head ? *(int*)head->data : -1);
+				printf("head\t%p %d\n", head, head ? *(int*)head->data : -1);
 			}
 			else if(!strcmp(command, "tail"))
 			{
 				Node *tail = dll_tail(list);
-				printf("tail %p %d\n", tail, tail ? *(int*)tail->data : -1);
+				printf("tail\t%p %d\n", tail, tail ? *(int*)tail->data : -1);
 			}
 			else if(!strcmp(command, "curr"))
 			{
 				Node *curr = dll_curr(list);
-				printf("curr %p %d\n", curr, curr ? *(int*)curr->data : -1);
+				printf("curr\t%p %d\n", curr, curr ? *(int*)curr->data : -1);
 			}
 			else if(!strcmp(command, "size"))
 			{
-				printf("size %d\n", dll_size(list));
+				printf("size\t%d\n", dll_size(list));
 			}
 			else if(!strcmp(command, "hasnext"))
 			{
@@ -392,7 +396,7 @@ void execute_dll(int nargs, char *command, int arg1, int arg2)
 			else if(!strcmp(command, "next"))
 			{
 				Node *next = dll_next(list);
-				printf("next %p %d\n", next, next ? *(int*)next->data : -1);
+				printf("next\t%p %d\n", next, next ? *(int*)next->data : -1);
 			}
 			else if(!strcmp(command, "hasprev"))
 			{
@@ -404,7 +408,7 @@ void execute_dll(int nargs, char *command, int arg1, int arg2)
 			else if(!strcmp(command, "prev"))
 			{
 				Node *prev = dll_prev(list);
-				printf("prev %p %d\n", prev, prev ? *(int*)prev->data : -1);
+				printf("prev\t%p %d\n", prev, prev ? *(int*)prev->data : -1);
 			}
 			else if(!strcmp(command, "print") || !strcmp(command, "p"))
 			{
@@ -412,10 +416,10 @@ void execute_dll(int nargs, char *command, int arg1, int arg2)
 			}
 			else if(!strcmp(command, "info"))
 			{
-				printf("head\t %p %d\n", list->head, list->head ? *(int*)list->head->data : -1);
-				printf("tail\t %p %d\n", list->tail, list->tail ? *(int*)list->tail->data : -1);
-				printf("curr\t %p %d\n", list->curr, list->curr ? *(int*)list->curr->data : -1);
-				printf("size\t %d\n", dll_size(list));
+				printf("head\t%p %d\n", list->head, list->head ? *(int*)list->head->data : -1);
+				printf("tail\t%p %d\n", list->tail, list->tail ? *(int*)list->tail->data : -1);
+				printf("curr\t%p %d\n", list->curr, list->curr ? *(int*)list->curr->data : -1);
+				printf("size\t%d\n", dll_size(list));
 			}
 			else if(!strcmp(command, "reverse"))
 			{
@@ -478,7 +482,15 @@ void execute_dll(int nargs, char *command, int arg1, int arg2)
 			}
 			break;
 		case 3:
-			if(!strcmp(command, "after"))
+			if(!strcmp(command, "before"))
+			{
+				Node *n = dll_search(list, a1, compare);
+				if(n)
+					list->curr = dll_add_before(list, n, a2);
+				else
+					printf("Node with data %d couldn't be found\n", arg1);
+			}
+			else if(!strcmp(command, "after"))
 			{
 				Node *n = dll_search(list, a1, compare);
 				if(n)

@@ -42,6 +42,7 @@
 DLL* dll_create(void)
 {
 	DLL *new = malloc(sizeof(DLL));
+
 	if(new)
 	{
 		new->head = new->tail = new->curr = NULL;
@@ -51,6 +52,7 @@ DLL* dll_create(void)
 	{
 		puts("ERROR: Out of memory");
 	}
+
 	return new;
 }
 
@@ -62,6 +64,8 @@ DLL* dll_create(void)
  */
 Node* dll_head(DLL *list)
 {
+	assert(list);
+
 	return list->curr = list->head;
 }
 
@@ -73,6 +77,8 @@ Node* dll_head(DLL *list)
  */
 Node* dll_tail(DLL *list)
 {
+	assert(list);
+
 	return list->curr = list->tail;
 }
 
@@ -84,6 +90,8 @@ Node* dll_tail(DLL *list)
  */
 Node* dll_curr(DLL *list)
 {
+	assert(list);
+
 	return list->curr;
 }
 
@@ -95,6 +103,8 @@ Node* dll_curr(DLL *list)
  */
 unsigned int dll_size(DLL *list)
 {
+	assert(list);
+
 	return list->size;
 }
 
@@ -106,6 +116,8 @@ unsigned int dll_size(DLL *list)
  */
 int dll_has_next(DLL *list)
 {
+	assert(list);
+
 	return list->curr != NULL;
 }
 
@@ -118,6 +130,8 @@ int dll_has_next(DLL *list)
  */
 Node* dll_next(DLL *list)
 {
+	assert(list);
+
 	if(list->curr && list->curr->next)
 		return list->curr = list->curr->next;
 	else
@@ -132,6 +146,8 @@ Node* dll_next(DLL *list)
  */
 int dll_has_prev(DLL *list)
 {
+	assert(list);
+
 	return list->curr != NULL;
 }
 
@@ -144,6 +160,8 @@ int dll_has_prev(DLL *list)
  */
 Node* dll_prev(DLL *list)
 {
+	assert(list);
+
 	if(list->curr && list->curr->prev)
 		return list->curr = list->curr->prev;
 	else
@@ -183,17 +201,20 @@ int dll_contains(DLL *list, Node *node)
 {
 	assert(list);
 
-	if(!node)
-		return 0;
-
-	Node *i = list->head, *j = list->tail;
-
-	while(i != j && i != j->next)
+	if(node && list->head && list->tail)
 	{
-		if(i == node || j == node)
+		Node *i = list->head, *j = list->tail;
+
+		while(i != j && i != j->next)
+		{
+			if(i == node || j == node)
+				return 1;
+			i = i->next;
+			j = j->prev;
+		}
+
+		if(i == node)
 			return 1;
-		i = i->next;
-		j = j->prev;
 	}
 
 	return 0;
@@ -207,7 +228,7 @@ int dll_contains(DLL *list, Node *node)
  * @param DLL *list: pointer to the doubly linked list
  * @param void *data: data pointer
  * @param int (*compare)(void*, void*): callback function compare
- * @return Node*: pointer to found node 
+ * @return Node*: pointer to the found node 
  */
 Node* dll_search(DLL *list, void *data, int (*compare)(void*, void*) )
 {
@@ -230,8 +251,8 @@ Node* dll_search(DLL *list, void *data, int (*compare)(void*, void*) )
 			j = j->prev;
 		}
 
-		if(!compare(j->data, data))
-			return j;
+		if(!compare(i->data, data))
+			return i;
 	}
 
 	return NULL;
@@ -248,6 +269,7 @@ Node* dll_create_node(void *data)
 	assert(data);
 
 	Node *new = malloc(sizeof(Node));
+
 	if (new)
 	{
 		new->data = data;
@@ -257,6 +279,7 @@ Node* dll_create_node(void *data)
 	{
 		puts("ERROR: Out of memory");
 	}
+
 	return new;
 }
 
@@ -281,7 +304,7 @@ Node* dll_add_first_node(DLL *list, void *data)
  *
  * @param DLL *list: pointer to the doubly linked list
  * @param void *data: data pointer
- * @return Node*: pointer to the first node
+ * @return Node*: pointer to the added node
  */
 Node* dll_add_begin(DLL *list, void *data)
 {
@@ -313,7 +336,7 @@ Node* dll_add_begin(DLL *list, void *data)
  *
  * @param DLL *list: pointer to the doubly linked list
  * @param void *data: data pointer
- * @return Node*: pointer to the last node
+ * @return Node*: pointer to the added node
  */
 Node* dll_add_end(DLL *list, void *data)
 {
@@ -341,12 +364,48 @@ Node* dll_add_end(DLL *list, void *data)
 }
 
 /**
+ * Adds a new node before a specific node.
+ *
+ * @param DLL *list: pointer to the doubly linked list
+ * @param Node *node: node to add before
+ * @param void *data: data pointer
+ * @return Node*: pointer to the added node
+ */
+Node* dll_add_before(DLL *list, Node *node, void *data)
+{
+	assert(list);
+	assert(node);
+	assert(data);
+
+	if(list->head && list->tail)
+	{
+		Node *new = dll_create_node(data);
+
+		if(new)
+		{
+			new->next = node;
+			new->prev = node->prev;
+			if(node == list->head)
+				list->head = new;
+			node->prev = new;
+			if(new->prev)
+				new->prev->next = new;
+			list->size++;
+		}
+
+		return new;
+	}
+
+	return NULL;
+}
+
+/**
  * Adds a new node after a specific node.
  *
  * @param DLL *list: pointer to the doubly linked list
  * @param Node *node: node to add after
  * @param void *data: data pointer
- * @return Node*: pointer to the first node
+ * @return Node*: pointer to the added node
  */
 Node* dll_add_after(DLL *list, Node *node, void *data)
 {

@@ -55,6 +55,7 @@ Node* dll_create_node(void *data);
 Node* dll_add_first_node(DLL *list, void *data);
 Node* dll_add_begin(DLL *list, void *data);
 Node* dll_add_end(DLL *list, void *data);
+Node* dll_add_before(DLL *list, Node *node, void *data);
 Node* dll_add_after(DLL *list, Node *node, void *data);
 void dll_free_node(Node *node, void (*free_data)(void*) );
 void dll_delete(DLL *list, void *data, int (*compare)(void*, void*), void (*free_data)(void*) );
