@@ -6,7 +6,7 @@
  * 	@date   December, 2012
  * 	@brief  Implementation of a doubly linked list.
  *
- * 	Function implementations of the doubly linked list.
+ * 	Function implementations of doublyLinkedList.
  *
  *  Copyright (C) 2012  Marc Zimmermann (tooreht@gmail.com)
  *
@@ -26,12 +26,17 @@
 
 #include <stdio.h>
 #include <stdlib.h>
-
 /* uncomment to ignore the assertions (no debug) */
 // #define NDEBUG
 #include <assert.h>
 
 #include "dll.h"
+
+/** 
+ * static function definitions
+ */
+static Node* dll_createNode(void *data);
+static Node* dll_addFirstNode(DLL *list, void *data);
 
 /**
  * Creates a new doubly linked list.
@@ -57,7 +62,7 @@ DLL* dll_create(void)
 }
 
 /**
- * Returns the head.
+ * Returns the head and sets the current to the head.
  *
  * @param DLL *list: pointer to the doubly linked list
  * @return Node*: tail node
@@ -70,7 +75,7 @@ Node* dll_head(DLL *list)
 }
 
 /**
- * Returns the tail.
+ * Returns the tail and sets the current to the tail.
  *
  * @param DLL *list: pointer to the doubly linked list
  * @return Node*: tail node
@@ -99,9 +104,9 @@ Node* dll_curr(DLL *list)
  * Returns the size of the doubly linked list.
  *
  * @param DLL *list: pointer to the doubly linked list
- * @return unsigned int: size
+ * @return unsigned long: size
  */
-unsigned int dll_size(DLL *list)
+unsigned long dll_size(DLL *list)
 {
 	assert(list);
 
@@ -114,7 +119,7 @@ unsigned int dll_size(DLL *list)
  * @param DLL *list: pointer to the doubly linked list
  * @return int: has next
  */
-int dll_has_next(DLL *list)
+int dll_hasNext(DLL *list)
 {
 	assert(list);
 
@@ -123,6 +128,8 @@ int dll_has_next(DLL *list)
 
 /**
  * Returns the next node.
+ * If the iterator reaches the tail, it returns NULL as next node,
+ * then it continues from the head. 
  * Use dll_head to initialize list->curr as head
  *
  * @param DLL *list: pointer to the doubly linked list
@@ -134,8 +141,10 @@ Node* dll_next(DLL *list)
 
 	if(list->curr && list->curr->next)
 		return list->curr = list->curr->next;
-	else
+	else if(list->curr && !list->curr->next)
 		return list->curr = NULL;
+	else
+		return list->curr = list->head;
 }
 
 /**
@@ -144,7 +153,7 @@ Node* dll_next(DLL *list)
  * @param DLL *list: pointer to the doubly linked list
  * @return int: has previous
  */
-int dll_has_prev(DLL *list)
+int dll_hasPrev(DLL *list)
 {
 	assert(list);
 
@@ -153,6 +162,8 @@ int dll_has_prev(DLL *list)
 
 /**
  * Returns the previous node.
+ * If the iterator reaches the head, it returns NULL as previous node,
+ * then it continues from the tail. 
  * Use dll_tail to initialize list->curr as tail
  *
  * @param DLL *list: pointer to the doubly linked list
@@ -164,8 +175,10 @@ Node* dll_prev(DLL *list)
 
 	if(list->curr && list->curr->prev)
 		return list->curr = list->curr->prev;
-	else
+	else if(list->curr && !list->curr->prev)
 		return list->curr = NULL;
+	else
+		return list->curr = list->tail;
 }
 
 /**
@@ -201,61 +214,155 @@ int dll_contains(DLL *list, Node *node)
 {
 	assert(list);
 
-	if(node && list->head && list->tail)
+	if(node && list->size)
 	{
-		Node *i = list->head, *j = list->tail;
+		Node *n = list->head;
 
-		while(i != j && i != j->next)
+		while(n)
 		{
-			if(i == node || j == node)
+			if(n == node)
 				return 1;
-			i = i->next;
-			j = j->prev;
+			n = n->next;			
 		}
-
-		if(i == node)
-			return 1;
 	}
 
 	return 0;
 }
 
 /**
- * Searches for a node with the specific data.
+ * Searches for data from head to tail.
  *
  * Uses a callback function to compare the data strucures.
  *
  * @param DLL *list: pointer to the doubly linked list
  * @param void *data: data pointer
  * @param int (*compare)(void*, void*): callback function compare
- * @return Node*: pointer to the found node 
+ * @return Node*: pointer to the found node
  */
-Node* dll_search(DLL *list, void *data, int (*compare)(void*, void*) )
+Node* searchHeadToTail(DLL *list, void *data, int (*compare)(void*, void*) )
+{
+	Node *n = list->head;
+	
+	if(list->size)
+	{
+		while(n)
+		{
+			if(!compare(n->data, data))
+				return n;
+			n = n->next;			
+		}
+	}
+
+	return NULL;
+}
+
+/**
+ * Searches for data from tail to head.
+ *
+ * Uses a callback function to compare the data strucures.
+ *
+ * @param DLL *list: pointer to the doubly linked list
+ * @param void *data: data pointer
+ * @param int (*compare)(void*, void*): callback function compare
+ * @return Node*: pointer to the found node
+ */
+Node* searchTailToHead(DLL *list, void *data, int (*compare)(void*, void*) )
+{
+	Node *n = list->tail;
+	
+	if(list->size)
+	{
+		while(n)
+		{
+			if(!compare(n->data, data))
+				return n;
+			n = n->prev;			
+		}
+	}
+
+	return NULL;
+}
+
+/**
+ * Searches for data from both, head and tail alternating.
+ *
+ * Uses a callback function to compare the data strucures.
+ *
+ * @param DLL *list: pointer to the doubly linked list
+ * @param void *data: data pointer
+ * @param int (*compare)(void*, void*): callback function compare
+ * @return Node*: pointer to the found node
+ */
+Node* searchHeadAndTail(DLL *list, void *data, int (*compare)(void*, void*) )
+{
+	Node *i = list->head, *j = list->tail;
+
+	if(list->size)
+	{
+		if(list->size % 2)
+		{
+			do
+			{
+				if(!compare(i->data, data))
+					return i;
+				if(!compare(j->data, data))
+					return j;
+
+				i = i->next;
+				j = j->prev;
+			}
+			while(i->prev != j->next);
+		}
+		else
+		{
+			while(i != j->next)
+			{
+				if(!compare(i->data, data))
+					return i;
+				if(!compare(j->data, data))
+					return j;
+
+				i = i->next;
+				j = j->prev;
+			}
+		}
+	}
+
+	return NULL;
+}
+
+/**
+ * Searches for a node with the specific data. Sets the current node to the found node.
+ *
+ * Uses a callback function to compare the data strucures.
+ *
+ * @param DLL *list: pointer to the doubly linked list
+ * @param void *data: data pointer
+ * @param int (*compare)(void*, void*): callback function compare
+ * @param int mode: search mode
+ * @return Node*: pointer to the found node
+ */
+Node* dll_search(DLL *list, void *data, int (*compare)(void*, void*), int mode)
 {
 	assert(list);
 	assert(data);
 	assert(compare);
 
-	if(list->head && list->tail)
+	Node *search = NULL;
+
+	switch(mode)
 	{
-		Node *i = list->head, *j = list->tail;
-
-		while(i != j && i != j->next)
-		{
-			if(!compare(i->data, data))
-				return i;
-			if(!compare(j->data, data))
-				return j;
-
-			i = i->next;
-			j = j->prev;
-		}
-
-		if(!compare(i->data, data))
-			return i;
+		case 1:
+			search = searchHeadAndTail(list, data, compare);
+			break;
+		case 2:
+			search = searchTailToHead(list, data, compare);
+			break;
+		default:
+			search = searchHeadToTail(list, data, compare);
 	}
 
-	return NULL;
+	return list->curr = search;
 }
 
 /**
@@ -264,7 +371,7 @@ Node* dll_search(DLL *list, void *data, int (*compare)(void*, void*) )
  * @param void *data: data pointer
  * @return Node*: pointer to the new node
  */
-Node* dll_create_node(void *data)
+Node* dll_createNode(void *data)
 {
 	assert(data);
 
@@ -290,30 +397,31 @@ Node* dll_create_node(void *data)
  * @param void *data: data pointer
  * @return Node*: pointer to the first node
  */
-Node* dll_add_first_node(DLL *list, void *data)
+Node* dll_addFirstNode(DLL *list, void *data)
 {
 	assert(list);
 	assert(data);
 
 	list->size = 1;
-	return list->head = list->tail = dll_create_node(data);
+	return list->head = list->tail = list->curr = dll_createNode(data);
 }
 
 /**
- * Adds a new node to the beginning of the doubly linked list.
+ * Pushs a new node to the head of the doubly linked list.
+ * Sets the current node to the new node.
  *
  * @param DLL *list: pointer to the doubly linked list
  * @param void *data: data pointer
- * @return Node*: pointer to the added node
+ * @return Node*: pointer to the pushed node
  */
-Node* dll_add_begin(DLL *list, void *data)
+Node* dll_pushHead(DLL *list, void *data)
 {
 	assert(list);
 	assert(data);
 
 	if(list->head)
 	{
-		Node *new = dll_create_node(data);
+		Node *new = dll_createNode(data);
 
 		if(new)
 		{
@@ -323,29 +431,30 @@ Node* dll_add_begin(DLL *list, void *data)
 			list->size++;
 		}
 
-		return new;
+		return list->curr = new;
 	}
 	else
 	{
-		return dll_add_first_node(list, data);
+		return dll_addFirstNode(list, data);
 	}
 }
 
 /**
- * Adds a new node to the end of the doubly linked list.
+ * Pushs a new node to the tail of the doubly linked list.
+ * Sets the current node to the new node.
  *
  * @param DLL *list: pointer to the doubly linked list
  * @param void *data: data pointer
- * @return Node*: pointer to the added node
+ * @return Node*: pointer to the pushed node
  */
-Node* dll_add_end(DLL *list, void *data)
+Node* dll_pushTail(DLL *list, void *data)
 {
 	assert(list);
 	assert(data);
 
 	if(list->tail)
 	{
-		Node *new = dll_create_node(data);
+		Node *new = dll_createNode(data);
 
 		if(new)
 		{
@@ -355,31 +464,34 @@ Node* dll_add_end(DLL *list, void *data)
 			list->size++;
 		}
 
-		return new;
+		return list->curr = new;
 	}
 	else
 	{
-		return dll_add_first_node(list, data);
+		return dll_addFirstNode(list, data);
 	}	
 }
 
 /**
  * Adds a new node before a specific node.
+ * Sets the current node to the new node.
  *
  * @param DLL *list: pointer to the doubly linked list
  * @param Node *node: node to add before
  * @param void *data: data pointer
  * @return Node*: pointer to the added node
  */
-Node* dll_add_before(DLL *list, Node *node, void *data)
+Node* dll_addBefore(DLL *list, Node *node, void *data)
 {
 	assert(list);
 	assert(node);
 	assert(data);
 
-	if(list->head && list->tail)
+	Node *new = NULL;
+
+	if(list->size)
 	{
-		Node *new = dll_create_node(data);
+		new = dll_createNode(data);
 
 		if(new)
 		{
@@ -392,30 +504,31 @@ Node* dll_add_before(DLL *list, Node *node, void *data)
 				new->prev->next = new;
 			list->size++;
 		}
-
-		return new;
 	}
 
-	return NULL;
+	return list->curr = new;
 }
 
 /**
  * Adds a new node after a specific node.
+ * Sets the current node to the new node.
  *
  * @param DLL *list: pointer to the doubly linked list
  * @param Node *node: node to add after
  * @param void *data: data pointer
  * @return Node*: pointer to the added node
  */
-Node* dll_add_after(DLL *list, Node *node, void *data)
+Node* dll_addAfter(DLL *list, Node *node, void *data)
 {
 	assert(list);
 	assert(node);
 	assert(data);
 
-	if(list->head && list->tail)
+	Node *new = NULL;
+
+	if(list->size)
 	{
-		Node *new = dll_create_node(data);
+		new = dll_createNode(data);
 
 		if(new)
 		{
@@ -428,28 +541,26 @@ Node* dll_add_after(DLL *list, Node *node, void *data)
 				new->next->prev = new;
 			list->size++;
 		}
-
-		return new;
 	}
 
-	return NULL;
+	return list->curr = new;
 }
 
 /**
  * Frees data and the node from memory.
  *
- * The data is freed by the callback function free_data.
+ * The data is freed by the callback function freeData.
  *
  * @param Node *node: node to free
- * @param void (*free_data)(void*): callback function free_data
+ * @param void (*freeData)(void*): callback function freeData
  * @return void
  */
-void dll_free_node(Node *node, void (*free_data)(void*) )
+void dll_freeNode(Node *node, void (*freeData)(void*) )
 {
 	assert(node);
-	assert(free_data);
+	assert(freeData);
 
-	free_data(node->data);
+	freeData(node->data);
 	node->prev = node->next = node->data = NULL;
 	free(node);
 }
@@ -458,26 +569,26 @@ void dll_free_node(Node *node, void (*free_data)(void*) )
  * Deletes the first node with the specific data from the list.
  *
  * Uses a callback function to compare the data strucures.
- * The data is freed by the callback function free_data.
+ * The data is freed by the callback function freeData.
  *
  * @param DLL *list: pointer to the doubly linked list
  * @param void *data: data pointer
  * @param int (*compare)(void*, void*): callback function compare
- * @param void (*free_data)(void*): callback function free_data
+ * @param void (*freeData)(void*): callback function freeData
  * @return void
  */
-void dll_delete(DLL *list, void *data, int (*compare)(void*, void*), void (*free_data)(void*) )
+void dll_delete(DLL *list, void *data, int (*compare)(void*, void*), void (*freeData)(void*) )
 {
 	assert(list);
 	assert(data);
 	assert(compare);
-	assert(free_data);
+	assert(freeData);
 
-	Node *found = dll_search(list, data, compare);
+	Node *found = dll_search(list, data, compare, 0);
 
 	if(found)
 	{
-		if(found == list->head && found == list->tail)
+		if(list->head == list->tail)
 			list->head = list->tail = NULL;
 		else if(found == list->head)
 		{
@@ -495,7 +606,10 @@ void dll_delete(DLL *list, void *data, int (*compare)(void*, void*), void (*free
 			found->next->prev = found->prev;
 		}
 
-		dll_free_node(found, free_data);
+		if(found == list->curr)
+			list->curr = NULL;
+
+		dll_freeNode(found, freeData);
 		list->size--;
 	}
 }
@@ -503,20 +617,20 @@ void dll_delete(DLL *list, void *data, int (*compare)(void*, void*), void (*free
 /**
  * Deletes the first node of the doubly linked list.
  *
- * The data is freed by the callback function free_data.
+ * The data is freed by the callback function freeData.
  *
  * @param DLL *list: pointer to the doubly linked list
- * @param void (*free_data)(void*): callback function free_data
+ * @param void (*freeData)(void*): callback function freeData
  * @return void
  */
-void dll_delete_first(DLL *list, void (*free_data)(void*) )
+void dll_popHead(DLL *list, void (*freeData)(void*) )
 {
 	assert(list);
-	assert(free_data);
+	assert(freeData);
 
 	Node *del = list->head;
 
-	if(list->head && list->tail)
+	if(list->size)
 	{
 		if(list->head == list->tail)
 		{
@@ -528,7 +642,10 @@ void dll_delete_first(DLL *list, void (*free_data)(void*) )
 			list->head->prev = NULL;
 		}
 
-		dll_free_node(del, free_data);
+		if(del == list->curr)
+			list->curr = NULL;
+
+		dll_freeNode(del, freeData);
 		list->size--;
 	}
 }
@@ -536,20 +653,20 @@ void dll_delete_first(DLL *list, void (*free_data)(void*) )
 /**
  * Deletes the last node of the doubly linked list.
  *
- * The data is freed by the callback function free_data.
+ * The data is freed by the callback function freeData.
  *
  * @param DLL *list: pointer to the doubly linked list
- * @param void (*free_data)(void*): callback function free_data
+ * @param void (*freeData)(void*): callback function freeData
  * @return void
  */
-void dll_delete_last(DLL *list, void (*free_data)(void*) )
+void dll_popTail(DLL *list, void (*freeData)(void*) )
 {
 	assert(list);
-	assert(free_data);
+	assert(freeData);
 
 	Node *del = list->tail;
 
-	if(list->head && list->tail)
+	if(list->size)
 	{
 		if(list->head == list->tail)
 		{
@@ -561,7 +678,10 @@ void dll_delete_last(DLL *list, void (*free_data)(void*) )
 			list->tail->next = NULL;
 		}
 
-		dll_free_node(del, free_data);
+		if(del == list->curr)
+			list->curr = NULL;
+
+		dll_freeNode(del, freeData);
 		list->size--;
 	}
 }
@@ -569,15 +689,15 @@ void dll_delete_last(DLL *list, void (*free_data)(void*) )
 /**
  * Destroys the whole list and frees it from memory.
  *
- * The data is freed by the callback function free_data.
+ * The data is freed by the callback function freeData.
  *
  * @param DLL *list: pointer to the doubly linked list
- * @param void (*free_data)(void*): callback function free_data
+ * @param void (*freeData)(void*): callback function freeData
  * @return void
  */
-void dll_destroy(DLL *list, void (*free_data)(void*) )
+void dll_clear(DLL *list, void (*freeData)(void*) )
 {
-	assert(free_data);
+	assert(freeData);
 
 	if(list)
 	{
@@ -587,7 +707,7 @@ void dll_destroy(DLL *list, void (*free_data)(void*) )
 		{
 			Node *del = n;
 			n = n->next;
-			dll_free_node(del, free_data);
+			dll_freeNode(del, freeData);
 		}
 		list->head = list->tail = list->curr = NULL;
 		list->size = 0;
@@ -619,7 +739,7 @@ void dll_reverse(DLL *list)
 }
 
 /**
- * Sorts the list.
+ * Sorts the list with the insertion sort algorithm.
  *
  * Uses a callback function to compare the data strucures.
  * The order of the nodes is defined through the compare function.
@@ -658,17 +778,17 @@ void dll_sort(DLL *list, int (*compare)(void*, void*) )
  * A callback function is used to print the data strucure.
  *
  * @param DLL *list: pointer to the doubly linked list
- * @param void (*print_data)(void*): callback function print_data
+ * @param void (*printData)(void*): callback function printData
  * @return void
  */
-void dll_print(DLL *list, void (*print_data)(void*) )
+void dll_print(DLL *list, void (*printData)(void*) )
 {
 	assert(list);
-	assert(print_data);
+	assert(printData);
 
-	printf("--- start ---\n");
+	printf("--- head ---\n");
 
-	dll_traverse(list, print_data);
+	dll_traverse(list, printData);
 
-	printf("---- end ----\n");
+	printf("--- tail ---\n");
 }

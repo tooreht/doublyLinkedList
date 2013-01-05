@@ -6,7 +6,7 @@
  * 	@date   December, 2012
  * 	@brief  Implementation of a doubly linked list, header file.
  *
- * 	Structure and function definitions of the doubly linked list implementation.
+ * 	Structure and function definitions of the doublyLinkedList implementation.
  *
  *  Copyright (C) 2012  Marc Zimmermann (tooreht@gmail.com)
  *
@@ -36,32 +36,33 @@ typedef struct
 	Node *head;
 	Node *tail;
 	Node *curr;
-	unsigned int size;
+	unsigned long size;
 } DLL;
 
 DLL* dll_create();
 Node* dll_head(DLL *list);
 Node* dll_tail(DLL *list);
 Node* dll_curr(DLL *list);
-unsigned int dll_size(DLL *list);
-int dll_has_next(DLL *list);
+unsigned long dll_size(DLL *list);
+int dll_hasNext(DLL *list);
 Node* dll_next(DLL *list);
-int dll_has_prev(DLL *list);
+int dll_hasPrev(DLL *list);
 Node* dll_prev(DLL *list);
 void dll_traverse(DLL *list, void (*callback)(void*) );
 int dll_contains(DLL *list, Node *node);
-Node* dll_search(DLL *list, void *data, int (*compare)(void*, void*) );
-Node* dll_create_node(void *data);
-Node* dll_add_first_node(DLL *list, void *data);
-Node* dll_add_begin(DLL *list, void *data);
-Node* dll_add_end(DLL *list, void *data);
-Node* dll_add_before(DLL *list, Node *node, void *data);
-Node* dll_add_after(DLL *list, Node *node, void *data);
-void dll_free_node(Node *node, void (*free_data)(void*) );
-void dll_delete(DLL *list, void *data, int (*compare)(void*, void*), void (*free_data)(void*) );
-void dll_delete_first(DLL *list, void (*free_data)(void*) );
-void dll_delete_last(DLL *list, void (*free_data)(void*) );
-void dll_destroy(DLL *list, void (*free_data)(void*) );
+Node* searchHeadToTail(DLL *list, void *data, int (*compare)(void*, void*) );
+Node* searchTailToHead(DLL *list, void *data, int (*compare)(void*, void*) );
+Node* searchHeadAndTail(DLL *list, void *data, int (*compare)(void*, void*) );
+Node* dll_search(DLL *list, void *data, int (*compare)(void*, void*), int mode);
+Node* dll_pushHead(DLL *list, void *data);
+Node* dll_pushTail(DLL *list, void *data);
+Node* dll_addBefore(DLL *list, Node *node, void *data);
+Node* dll_addAfter(DLL *list, Node *node, void *data);
+void dll_freeNode(Node *node, void (*freeData)(void*) );
+void dll_delete(DLL *list, void *data, int (*compare)(void*, void*), void (*freeData)(void*) );
+void dll_popHead(DLL *list, void (*freeData)(void*) );
+void dll_popTail(DLL *list, void (*freeData)(void*) );
+void dll_clear(DLL *list, void (*freeData)(void*) );
 void dll_reverse(DLL *list);
 void dll_sort(DLL *list, int (*compare)(void*, void*) );
-void dll_print(DLL *list, void (*print_data)(void*) );
+void dll_print(DLL *list, void (*printData)(void*) );

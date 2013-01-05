@@ -4,7 +4,7 @@
  *	@file   interactive.c
  *	@author Marc Zimmermann (tooreht@gmail.com)
  *	@date   December, 2012
- *	@brief  Interactive testing of doubly linked list.
+ *	@brief  Interactive testing of doublyLinkedList.
  *
  *	This programm reads command lines from stdin and executes them.
  *	It's purpose is to interactively test the implementation of the data structure.
@@ -25,10 +25,12 @@
  *  along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
+#include <stdio.h>
+#include <stdlib.h>
 #include <string.h>
 #include <time.h>
 
-#include "dll.c"
+#include "dll.h"
 
 DLL *list;
 int *d1, *d2;
@@ -50,20 +52,20 @@ void usage(void)
 	puts("next\t\tprint the next node");
 	puts("prev\t\tprint the previous node");
 	puts("print (p)\tprint the list");
-	puts("info\t\tprint list info");
-	puts("hasnext\t\tprint if list has a next node");
-	puts("hasprev\t\tprint if list has a previous node");
+	puts("info (i)\tprint list info");
+	puts("hasNext\t\tprint if list has a next node");
+	puts("hasPrev\t\tprint if list has a previous node");
 	puts("reverse\t\treverse the list");
 	puts("sort\t\tsort the list in ascending order");
-	puts("delf\t\tdelete the first node");
-	puts("dell\t\tdelete the last node");
-	puts("destroy\t\tdelete the whole list");
+	puts("popHead\t\tpop the first node");
+	puts("popTail\t\tpop the last node");
+	puts("clear\t\tclear the whole list");
 	puts("");
-	puts("beg 1\t\tadd an integer to the beginning of the list");
-	puts("end 1\t\tadds an integer to the end of the list");
-	puts("find 1\t\tsearche after an integer in the list");
+	puts("pushHead 1\tpush an integer to the head of the list");
+	puts("pushTail 1\tpush an integer to the tail of the list");
+	puts("find 1\t\tsearch after an integer in the list");
 	puts("del 1\t\tdelete an integer in the list");
-	puts("performance 10\tdo some performance testing with a number of elements");
+	puts("perform 10\tdo some performance testing with a number of elements");
 	puts("");
 	puts("before 1 2\tadd integer 2 before integer 1 in the list");
 	puts("after 1 2\tadd integer 2 after integer 1 in the list");
@@ -76,7 +78,7 @@ void usage(void)
  * @param const char *file: file name
  * @return void
  */
-void read_file(const char *file)
+void readFile(const char *file)
 {
 	FILE *fp; /* declare the file pointer */
 	fp = fopen(file, "rt"); /* open the file for reading */
@@ -106,7 +108,7 @@ void read_file(const char *file)
  * @param void
  * @return void
  */
-void show_warranty(void)
+void showWarranty(void)
 {
 	puts("15. Disclaimer of Warranty.");
 	puts("");
@@ -126,9 +128,9 @@ void show_warranty(void)
  * @param void
  * @return void
  */
-void show_conditions(void)
+void showConditions(void)
 {
-	read_file("LICENSE.md");
+	readFile("LICENSE.md");
 }
 
 /**
@@ -139,7 +141,7 @@ void show_conditions(void)
  * @param char option: option
  * @return void
  */
-void execute_gpl(int nargs, char *command, char option)
+void executeGpl(int nargs, char *command, char option)
 {
 	switch(nargs)
 	{
@@ -147,9 +149,9 @@ void execute_gpl(int nargs, char *command, char option)
 			if(!strcmp(command, "show"))
 			{
 				if(option == 'w')
-					show_warranty();
+					showWarranty();
 				else if(option == 'c')
-					show_conditions();
+					showConditions();
 			}
 		break;
 	}
@@ -158,10 +160,7 @@ void execute_gpl(int nargs, char *command, char option)
 
 
 
-/* =========================== User defined functions =========================== */
-
-
-
+/* =========================== User defined code =========================== */
 
 /**
  * The data pointer is stored as a void pointer in each node of the list.
@@ -185,7 +184,7 @@ void execute_gpl(int nargs, char *command, char option)
  * @param void* data
  * @return void
  */
-void print_data(void *data)
+void printData(void *data)
 {
 	printf("%d\n", *(int *) data);
 }
@@ -196,7 +195,7 @@ void print_data(void *data)
  * @param void* data
  * @return void
  */
-void free_data(void *data)
+void freeData(void *data)
 {
 	free(data);
 }
@@ -232,7 +231,7 @@ int compare(void *first_arg, void *second_arg)
  * @param int elements: number of elements
  * @return void
  */
-void performance(int elements)
+void perform(int elements)
 {
 	clock_t start = clock();
 
@@ -246,14 +245,12 @@ void performance(int elements)
 		integer = malloc(sizeof(int));
 		*integer = i;
 		data = integer;
-		dll_add_begin(list, data);
-		// dll_add_end(list, data);
-		// dll_add_after(list, list->current, data);
+		dll_pushTail(list, data);
 	}
 
 	puts("print dll with 'iterator' while loop head to tail");
 	dll_head(list);
-	while(dll_has_next(list))
+	while(dll_hasNext(list))
 	{
 		printf("%d\n", *(int*)list->curr->data);
 		dll_next(list);
@@ -263,11 +260,11 @@ void performance(int elements)
 	// dll_sort(list, compare);
 	puts("reverse");
 	dll_reverse(list);
-	// dll_print(list, print_data);
+	// dll_print(list, printData);
 
 	puts("print dll with 'iterator' for loop tail to head");
 	Node *n = NULL;
-	for(n = dll_tail(list); dll_has_prev(list); n = dll_prev(list))
+	for(n = dll_tail(list); dll_hasPrev(list); n = dll_prev(list))
 	{
 		printf("%d\n", *(int*)n->data);
 	}
@@ -276,32 +273,32 @@ void performance(int elements)
 	// for(i = 0; i < elements; i++)
 	// {
 	// 	data = &i;
-	// 	dll_delete(list, data, compare, free_data);
+	// 	dll_delete(list, data, compare, freeData);
 	// }
 
 	// puts("delete dll with while loop 'iterator' head to tail");
 	// dll_head(list);
-	// while(dll_has_next(list))
+	// while(dll_hasNext(list))
 	// {
 	// 	dll_next(list);
-	// 	dll_delete_first(list, free_data);
+	// 	dll_popHead(list, freeData);
 	// }
 
-	int bla = 1;
-	void *d = &bla;
-	Node *node = dll_search(list, d, compare);
+	int contains = 1;
+	void *d = &contains;
+	Node *node = dll_search(list, d, compare, 0);
 	printf("contains %d\n", dll_contains(list, node));
 
 	puts("delete dll with 'iterator' while loop tail to head");
 	dll_tail(list);
-	while(dll_has_prev(list))
+	while(dll_hasPrev(list))
 	{
 		dll_prev(list);
-		dll_delete_last(list, free_data);
+		dll_popTail(list, freeData);
 	}
 
 	puts("print list");
-	dll_print(list, print_data);
+	dll_print(list, printData);
 
 	double elapsed = ( (double)clock() - start ) / CLOCKS_PER_SEC;
 	printf("Performance with %d elements finished in %f s\n", elements, elapsed);
@@ -330,9 +327,9 @@ void fill(int beg, int end)
 		integer = malloc(sizeof(int));
 		*integer = i;
 		data = integer;
-		// dll_add_begin(list, data);
-		dll_add_end(list, data);
-		// dll_add_after(list, list->current, data);
+		// dll_pushTail(list, data);
+		dll_pushTail(list, data);
+		// dll_pushTail(list, list->current, data);
 	}
 
 	double elapsed = ( (double)clock() - start ) / CLOCKS_PER_SEC;
@@ -348,7 +345,7 @@ void fill(int beg, int end)
  * @param int arg2: argument two
  * @return void
  */
-void execute_dll(int nargs, char *command, int arg1, int arg2)
+void executeDll(int nargs, char *command, int arg1, int arg2)
 {
 	d1 = malloc(sizeof(int));
 	d2 = malloc(sizeof(int));
@@ -384,11 +381,11 @@ void execute_dll(int nargs, char *command, int arg1, int arg2)
 			}
 			else if(!strcmp(command, "size"))
 			{
-				printf("size\t%d\n", dll_size(list));
+				printf("size\t%ld\n", dll_size(list));
 			}
-			else if(!strcmp(command, "hasnext"))
+			else if(!strcmp(command, "hasNext"))
 			{
-				if(dll_has_next(list))
+				if(dll_hasNext(list))
 					puts("yes");
 				else
 					puts("no");
@@ -398,9 +395,9 @@ void execute_dll(int nargs, char *command, int arg1, int arg2)
 				Node *next = dll_next(list);
 				printf("next\t%p %d\n", next, next ? *(int*)next->data : -1);
 			}
-			else if(!strcmp(command, "hasprev"))
+			else if(!strcmp(command, "hasPrev"))
 			{
-				if(dll_has_prev(list))
+				if(dll_hasPrev(list))
 					puts("yes");
 				else
 					puts("no");
@@ -412,14 +409,14 @@ void execute_dll(int nargs, char *command, int arg1, int arg2)
 			}
 			else if(!strcmp(command, "print") || !strcmp(command, "p"))
 			{
-				dll_print(list, print_data);
+				dll_print(list, printData);
 			}
-			else if(!strcmp(command, "info"))
+			else if(!strcmp(command, "info") || !strcmp(command, "i"))
 			{
 				printf("head\t%p %d\n", list->head, list->head ? *(int*)list->head->data : -1);
 				printf("tail\t%p %d\n", list->tail, list->tail ? *(int*)list->tail->data : -1);
 				printf("curr\t%p %d\n", list->curr, list->curr ? *(int*)list->curr->data : -1);
-				printf("size\t%d\n", dll_size(list));
+				printf("size\t%ld\n", dll_size(list));
 			}
 			else if(!strcmp(command, "reverse"))
 			{
@@ -429,17 +426,17 @@ void execute_dll(int nargs, char *command, int arg1, int arg2)
 			{
 				dll_sort(list, compare);
 			}
-			else if(!strcmp(command, "delf"))
+			else if(!strcmp(command, "popHead"))
 			{
-				dll_delete_first(list, free_data);
+				dll_popHead(list, freeData);
 			}
-			else if(!strcmp(command, "dell"))
+			else if(!strcmp(command, "popTail"))
 			{
-				dll_delete_last(list, free_data);
+				dll_popTail(list, freeData);
 			}
-			else if(!strcmp(command, "destroy"))
+			else if(!strcmp(command, "clear"))
 			{
-				dll_destroy(list, free_data);
+				dll_clear(list, freeData);
 				list = NULL;
 			}
 			else if(!strcmp(command, "show"))
@@ -452,29 +449,32 @@ void execute_dll(int nargs, char *command, int arg1, int arg2)
 			}
 			break;
 		case 2:
-			if(!strcmp(command, "beg"))
+			if(!strcmp(command, "pushHead"))
 			{
-				dll_add_begin(list, a1);
+				dll_pushHead(list, a1);
 			}
-			else if(!strcmp(command, "end"))
+			else if(!strcmp(command, "pushTail"))
 			{
-				dll_add_end(list, a1);
+				dll_pushTail(list, a1);
 			}
 			else if(!strcmp(command, "find"))
 			{
-				Node *found = dll_search(list, a1, compare);
+				clock_t start = clock();
+				Node *found = dll_search(list, a1, compare, 0);
+				double elapsed = ( (double)clock() - start ) / CLOCKS_PER_SEC;
+				printf("searching finished after %f s\n", elapsed);
 				if(found)
-					print_data(found->data);
+					printData(found->data);
 				else
 					printf("Node with data %d couldn't be found\n", arg1);
 			}
 			else if(!strcmp(command, "del"))
 			{
-				dll_delete(list, a1, compare, free_data);
+				dll_delete(list, a1, compare, freeData);
 			}
-			else if(!strcmp(command, "performance"))
+			else if(!strcmp(command, "perform"))
 			{
-				performance(arg1);
+				perform(arg1);
 			}
 			else
 			{
@@ -484,17 +484,28 @@ void execute_dll(int nargs, char *command, int arg1, int arg2)
 		case 3:
 			if(!strcmp(command, "before"))
 			{
-				Node *n = dll_search(list, a1, compare);
+				Node *n = dll_search(list, a1, compare, 0);
 				if(n)
-					list->curr = dll_add_before(list, n, a2);
+					list->curr = dll_addBefore(list, n, a2);
 				else
 					printf("Node with data %d couldn't be found\n", arg1);
 			}
 			else if(!strcmp(command, "after"))
 			{
-				Node *n = dll_search(list, a1, compare);
+				Node *n = dll_search(list, a1, compare, 0);
 				if(n)
-					list->curr = dll_add_after(list, n, a2);
+					list->curr = dll_addAfter(list, n, a2);
+				else
+					printf("Node with data %d couldn't be found\n", arg1);
+			}
+			else if(!strcmp(command, "find"))
+			{
+				clock_t start = clock();
+				Node *found = dll_search(list, a1, compare, arg2);
+				double elapsed = ( (double)clock() - start ) / CLOCKS_PER_SEC;
+				printf("Performance finished in %f s\n", elapsed);
+				if(found)
+					printData(found->data);
 				else
 					printf("Node with data %d couldn't be found\n", arg1);
 			}
@@ -518,7 +529,7 @@ void execute_dll(int nargs, char *command, int arg1, int arg2)
  * @param size_t *nbytes: numbers of allocated charbytes
  * @return void
  */
-void parse_line(char *line, size_t *nbytes)
+void parseLine(char *line, size_t *nbytes)
 {
 	int nargs;
 	char command[*nbytes], c;
@@ -527,11 +538,11 @@ void parse_line(char *line, size_t *nbytes)
 
 	nargs = sscanf(line, "%s %d %d", command, &a1, &a2);
 
-	execute_dll(nargs, command, a1, a2);
+	executeDll(nargs, command, a1, a2);
 
 	nargs = sscanf(line, "%s %c", command, &c);
 
-	execute_gpl(nargs, command, c);
+	executeGpl(nargs, command, c);
 }
 
 /**
@@ -559,7 +570,7 @@ int main(int argc, char const *argv[])
 
 	while( (bytes_read = getline(&line, &nbytes, stdin)) != -1)
 	{
-		parse_line(line, &bytes_read);
+		parseLine(line, &bytes_read);
 	}
 
 	free(d1);
@@ -567,7 +578,7 @@ int main(int argc, char const *argv[])
 
 	free(line);
 
-	dll_destroy(list, free_data);
+	dll_clear(list, freeData);
 
 	return 0;
 }
