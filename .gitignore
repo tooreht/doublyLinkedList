@@ -1,5 +1,9 @@
-.DS_Store
+sample
 
 interactive
 
+*.o
+
 *.plist
+
+.DS_Store
