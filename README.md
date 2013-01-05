@@ -2,31 +2,34 @@
 
 This is an implementation of a doubly linked list in the C programming language.
 
-The current features of my implementation are:
+The current features of the implementation are:
 
+- create dll
 - head
 - tail
 - curr
 - size
-- has_next
+- hasNext
 - next
-- has_prev
+- hasPrev
 - prev
-- create dll
 - traverse dll
+- searchHeadToTail
+- searchTailToHead
+- searchHeadAndTail
 - search dll
-- create node
-- add first node
-- add begin
-- add end
-- add after
-- free node
+- pushHead
+- pushTail
+- addBefore
+- addAfter
+- freeNode
 - delete
-- delete first
-- delete last
-- destroy dll
+- popHead
+- popTail
+- clear dll
 - reverse dll
 - sort dll
 - print dll
 
+The file sample.c shows some usage examples.
 The file interactive.c provides a little command line like interface to test the features.
