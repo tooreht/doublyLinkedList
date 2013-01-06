@@ -9,8 +9,6 @@
  *	This programm reads command lines from stdin and executes them.
  *	It's purpose is to interactively test the implementation of the data structure.
  *
- *  Copyright (C) 2012  Marc Zimmermann (tooreht@gmail.com)
- *
  *  This program is free software: you can redistribute it and/or modify
  *  it under the terms of the GNU General Public License as published by
  *  the Free Software Foundation, either version 3 of the License, or
