@@ -212,7 +212,7 @@ void freeData(void *data)
  * 	 0: if first and second are equal
  * 	 1: if first is lower than second
  */
-int compare(void *first_arg, void *second_arg)
+int compareData(void *first_arg, void *second_arg)
 {
 	int first = *(int *) first_arg;
 	int second = *(int *) second_arg;
@@ -257,10 +257,10 @@ void perform(int elements)
 	}
 	
 	// puts("sort");
-	// dll_sort(list, compare);
+	// dll_sort(list);
 	puts("reverse");
 	dll_reverse(list);
-	// dll_print(list, printData);
+	// dll_print(list);
 
 	puts("print dll with 'iterator' for loop tail to head");
 	Node *n = NULL;
@@ -273,7 +273,7 @@ void perform(int elements)
 	// for(i = 0; i < elements; i++)
 	// {
 	// 	data = &i;
-	// 	dll_delete(list, data, compare, freeData);
+	// 	dll_delete(list, data);
 	// }
 
 	// puts("delete dll with while loop 'iterator' head to tail");
@@ -281,12 +281,12 @@ void perform(int elements)
 	// while(dll_hasNext(list))
 	// {
 	// 	dll_next(list);
-	// 	dll_popHead(list, freeData);
+	// 	dll_popHead(list);
 	// }
 
 	int contains = 1;
 	void *d = &contains;
-	Node *node = dll_search(list, d, compare, 0);
+	Node *node = dll_search(list, d, 1);
 	printf("contains %d\n", dll_contains(list, node));
 
 	puts("delete dll with 'iterator' while loop tail to head");
@@ -294,11 +294,11 @@ void perform(int elements)
 	while(dll_hasPrev(list))
 	{
 		dll_prev(list);
-		dll_popTail(list, freeData);
+		dll_popTail(list);
 	}
 
 	puts("print list");
-	dll_print(list, printData);
+	dll_print(list);
 
 	double elapsed = ( (double)clock() - start ) / CLOCKS_PER_SEC;
 	printf("Performance with %d elements finished in %f s\n", elements, elapsed);
@@ -327,9 +327,7 @@ void fill(int beg, int end)
 		integer = malloc(sizeof(int));
 		*integer = i;
 		data = integer;
-		// dll_pushTail(list, data);
 		dll_pushTail(list, data);
-		// dll_pushTail(list, list->current, data);
 	}
 
 	double elapsed = ( (double)clock() - start ) / CLOCKS_PER_SEC;
@@ -359,7 +357,12 @@ void executeDll(int nargs, char *command, int arg1, int arg2)
 	a2 = d2;
 
 	if(!list)
+	{
 		list = dll_create();
+		dll_registerCompareData(list, compareData);
+		dll_registerFreeData(list, freeData);
+		dll_registerPrintData(list, printData);
+	}
 
 	switch(nargs)
 	{
@@ -409,7 +412,7 @@ void executeDll(int nargs, char *command, int arg1, int arg2)
 			}
 			else if(!strcmp(command, "print") || !strcmp(command, "p"))
 			{
-				dll_print(list, printData);
+				dll_print(list);
 			}
 			else if(!strcmp(command, "info") || !strcmp(command, "i"))
 			{
@@ -424,19 +427,19 @@ void executeDll(int nargs, char *command, int arg1, int arg2)
 			}
 			else if(!strcmp(command, "sort"))
 			{
-				dll_sort(list, compare);
+				dll_sort(list);
 			}
 			else if(!strcmp(command, "popHead"))
 			{
-				dll_popHead(list, freeData);
+				dll_popHead(list);
 			}
 			else if(!strcmp(command, "popTail"))
 			{
-				dll_popTail(list, freeData);
+				dll_popTail(list);
 			}
 			else if(!strcmp(command, "clear"))
 			{
-				dll_clear(list, freeData);
+				dll_clear(list);
 				list = NULL;
 			}
 			else if(!strcmp(command, "show"))
@@ -460,7 +463,7 @@ void executeDll(int nargs, char *command, int arg1, int arg2)
 			else if(!strcmp(command, "find"))
 			{
 				clock_t start = clock();
-				Node *found = dll_search(list, a1, compare, 0);
+				Node *found = dll_search(list, a1, 1);
 				double elapsed = ( (double)clock() - start ) / CLOCKS_PER_SEC;
 				printf("searching finished after %f s\n", elapsed);
 				if(found)
@@ -470,7 +473,7 @@ void executeDll(int nargs, char *command, int arg1, int arg2)
 			}
 			else if(!strcmp(command, "del"))
 			{
-				dll_delete(list, a1, compare, freeData);
+				dll_delete(list, a1);
 			}
 			else if(!strcmp(command, "perform"))
 			{
@@ -484,7 +487,7 @@ void executeDll(int nargs, char *command, int arg1, int arg2)
 		case 3:
 			if(!strcmp(command, "before"))
 			{
-				Node *n = dll_search(list, a1, compare, 0);
+				Node *n = dll_search(list, a1, 1);
 				if(n)
 					list->curr = dll_addBefore(list, n, a2);
 				else
@@ -492,7 +495,7 @@ void executeDll(int nargs, char *command, int arg1, int arg2)
 			}
 			else if(!strcmp(command, "after"))
 			{
-				Node *n = dll_search(list, a1, compare, 0);
+				Node *n = dll_search(list, a1, 1);
 				if(n)
 					list->curr = dll_addAfter(list, n, a2);
 				else
@@ -501,7 +504,7 @@ void executeDll(int nargs, char *command, int arg1, int arg2)
 			else if(!strcmp(command, "find"))
 			{
 				clock_t start = clock();
-				Node *found = dll_search(list, a1, compare, arg2);
+				Node *found = dll_search(list, a1, arg2);
 				double elapsed = ( (double)clock() - start ) / CLOCKS_PER_SEC;
 				printf("Performance finished in %f s\n", elapsed);
 				if(found)
@@ -578,7 +581,7 @@ int main(int argc, char const *argv[])
 
 	free(line);
 
-	dll_clear(list, freeData);
+	dll_clear(list);
 
 	return 0;
 }

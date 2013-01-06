@@ -62,6 +62,48 @@ DLL* dll_create(void)
 }
 
 /**
+ * Registers compareDataData callback function on the list.
+ *
+ * @param DLL *list: pointer to the doubly linked list
+ * @param int (*compareData)(void*, void*): callback function compareData
+ */
+void dll_registerCompareData(DLL *list, int (*compareData)(void*, void*) )
+{
+	assert(list);
+	assert(compareData);
+	
+	list->compareData = compareData;
+}
+
+/**
+ * Registers freeData callback function on the list.
+ *
+ * @param DLL *list: pointer to the doubly linked list
+ * @param int (*compareData)(void*, void*): callback function compareData
+ */
+void dll_registerFreeData(DLL *list, void (*freeData)(void*) )
+{
+	assert(list);
+	assert(freeData);
+
+	list->freeData = freeData;
+}
+
+/**
+ * Registers printData callback function on the list.
+ *
+ * @param DLL *list: pointer to the doubly linked list
+ * @param int (*compareData)(void*, void*): callback function compareData
+ */
+void dll_registerPrintData(DLL *list, void (*printData)(void*) )
+{
+	assert(list);
+	assert(printData);
+
+	list->printData = printData;
+}
+
+/**
  * Returns the head and sets the current to the head.
  *
  * @param DLL *list: pointer to the doubly linked list
@@ -232,22 +274,22 @@ int dll_contains(DLL *list, Node *node)
 /**
  * Searches for data from head to tail.
  *
- * Uses a callback function to compare the data strucures.
- *
  * @param DLL *list: pointer to the doubly linked list
  * @param void *data: data pointer
- * @param int (*compare)(void*, void*): callback function compare
  * @return Node*: pointer to the found node
  */
-Node* searchHeadToTail(DLL *list, void *data, int (*compare)(void*, void*) )
+Node* searchHeadToTail(DLL *list, void *data)
 {
+	assert(list);
+	assert(data);
+	
 	Node *n = list->head;
 	
 	if(list->size)
 	{
 		while(n)
 		{
-			if(!compare(n->data, data))
+			if(!list->compareData(n->data, data))
 				return n;
 			n = n->next;			
 		}
@@ -259,22 +301,22 @@ Node* searchHeadToTail(DLL *list, void *data, int (*compare)(void*, void*) )
 /**
  * Searches for data from tail to head.
  *
- * Uses a callback function to compare the data strucures.
- *
  * @param DLL *list: pointer to the doubly linked list
  * @param void *data: data pointer
- * @param int (*compare)(void*, void*): callback function compare
  * @return Node*: pointer to the found node
  */
-Node* searchTailToHead(DLL *list, void *data, int (*compare)(void*, void*) )
+Node* searchTailToHead(DLL *list, void *data)
 {
+	assert(list);
+	assert(data);
+	
 	Node *n = list->tail;
 	
 	if(list->size)
 	{
 		while(n)
 		{
-			if(!compare(n->data, data))
+			if(!list->compareData(n->data, data))
 				return n;
 			n = n->prev;			
 		}
@@ -286,15 +328,15 @@ Node* searchTailToHead(DLL *list, void *data, int (*compare)(void*, void*) )
 /**
  * Searches for data from both, head and tail alternating.
  *
- * Uses a callback function to compare the data strucures.
- *
  * @param DLL *list: pointer to the doubly linked list
  * @param void *data: data pointer
- * @param int (*compare)(void*, void*): callback function compare
  * @return Node*: pointer to the found node
  */
-Node* searchHeadAndTail(DLL *list, void *data, int (*compare)(void*, void*) )
+Node* searchHeadAndTail(DLL *list, void *data)
 {
+	assert(list);
+	assert(data);
+
 	Node *i = list->head, *j = list->tail;
 
 	if(list->size)
@@ -303,9 +345,9 @@ Node* searchHeadAndTail(DLL *list, void *data, int (*compare)(void*, void*) )
 		{
 			do
 			{
-				if(!compare(i->data, data))
+				if(!list->compareData(i->data, data))
 					return i;
-				if(!compare(j->data, data))
+				if(!list->compareData(j->data, data))
 					return j;
 
 				i = i->next;
@@ -317,9 +359,9 @@ Node* searchHeadAndTail(DLL *list, void *data, int (*compare)(void*, void*) )
 		{
 			while(i != j->next)
 			{
-				if(!compare(i->data, data))
+				if(!list->compareData(i->data, data))
 					return i;
-				if(!compare(j->data, data))
+				if(!list->compareData(j->data, data))
 					return j;
 
 				i = i->next;
@@ -334,32 +376,29 @@ Node* searchHeadAndTail(DLL *list, void *data, int (*compare)(void*, void*) )
 /**
  * Searches for a node with the specific data. Sets the current node to the found node.
  *
- * Uses a callback function to compare the data strucures.
- *
  * @param DLL *list: pointer to the doubly linked list
  * @param void *data: data pointer
- * @param int (*compare)(void*, void*): callback function compare
  * @param int mode: search mode
  * @return Node*: pointer to the found node
  */
-Node* dll_search(DLL *list, void *data, int (*compare)(void*, void*), int mode)
+Node* dll_search(DLL *list, void *data, int mode)
 {
 	assert(list);
 	assert(data);
-	assert(compare);
 
 	Node *search = NULL;
 
 	switch(mode)
 	{
-		case 1:
-			search = searchHeadAndTail(list, data, compare);
+		case 3:
+			search = searchHeadAndTail(list, data);
 			break;
 		case 2:
-			search = searchTailToHead(list, data, compare);
+			search = searchTailToHead(list, data);
 			break;
+		case 1:
 		default:
-			search = searchHeadToTail(list, data, compare);
+			search = searchHeadToTail(list, data);
 	}
 
 	return list->curr = search;
@@ -549,18 +588,15 @@ Node* dll_addAfter(DLL *list, Node *node, void *data)
 /**
  * Frees data and the node from memory.
  *
- * The data is freed by the callback function freeData.
- *
  * @param Node *node: node to free
- * @param void (*freeData)(void*): callback function freeData
  * @return void
  */
-void dll_freeNode(Node *node, void (*freeData)(void*) )
+void dll_freeNode(DLL *list, Node *node)
 {
+	assert(list);
 	assert(node);
-	assert(freeData);
 
-	freeData(node->data);
+	list->freeData(node->data);
 	node->prev = node->next = node->data = NULL;
 	free(node);
 }
@@ -568,23 +604,16 @@ void dll_freeNode(Node *node, void (*freeData)(void*) )
 /**
  * Deletes the first node with the specific data from the list.
  *
- * Uses a callback function to compare the data strucures.
- * The data is freed by the callback function freeData.
- *
  * @param DLL *list: pointer to the doubly linked list
  * @param void *data: data pointer
- * @param int (*compare)(void*, void*): callback function compare
- * @param void (*freeData)(void*): callback function freeData
  * @return void
  */
-void dll_delete(DLL *list, void *data, int (*compare)(void*, void*), void (*freeData)(void*) )
+void dll_delete(DLL *list, void *data)
 {
 	assert(list);
 	assert(data);
-	assert(compare);
-	assert(freeData);
 
-	Node *found = dll_search(list, data, compare, 0);
+	Node *found = dll_search(list, data, 0);
 
 	if(found)
 	{
@@ -609,7 +638,7 @@ void dll_delete(DLL *list, void *data, int (*compare)(void*, void*), void (*free
 		if(found == list->curr)
 			list->curr = NULL;
 
-		dll_freeNode(found, freeData);
+		dll_freeNode(list, found);
 		list->size--;
 	}
 }
@@ -617,16 +646,12 @@ void dll_delete(DLL *list, void *data, int (*compare)(void*, void*), void (*free
 /**
  * Deletes the first node of the doubly linked list.
  *
- * The data is freed by the callback function freeData.
- *
  * @param DLL *list: pointer to the doubly linked list
- * @param void (*freeData)(void*): callback function freeData
  * @return void
  */
-void dll_popHead(DLL *list, void (*freeData)(void*) )
+void dll_popHead(DLL *list)
 {
 	assert(list);
-	assert(freeData);
 
 	Node *del = list->head;
 
@@ -645,7 +670,7 @@ void dll_popHead(DLL *list, void (*freeData)(void*) )
 		if(del == list->curr)
 			list->curr = NULL;
 
-		dll_freeNode(del, freeData);
+		dll_freeNode(list, del);
 		list->size--;
 	}
 }
@@ -653,16 +678,12 @@ void dll_popHead(DLL *list, void (*freeData)(void*) )
 /**
  * Deletes the last node of the doubly linked list.
  *
- * The data is freed by the callback function freeData.
- *
  * @param DLL *list: pointer to the doubly linked list
- * @param void (*freeData)(void*): callback function freeData
  * @return void
  */
-void dll_popTail(DLL *list, void (*freeData)(void*) )
+void dll_popTail(DLL *list)
 {
 	assert(list);
-	assert(freeData);
 
 	Node *del = list->tail;
 
@@ -681,7 +702,7 @@ void dll_popTail(DLL *list, void (*freeData)(void*) )
 		if(del == list->curr)
 			list->curr = NULL;
 
-		dll_freeNode(del, freeData);
+		dll_freeNode(list, del);
 		list->size--;
 	}
 }
@@ -689,16 +710,11 @@ void dll_popTail(DLL *list, void (*freeData)(void*) )
 /**
  * Destroys the whole list and frees it from memory.
  *
- * The data is freed by the callback function freeData.
- *
  * @param DLL *list: pointer to the doubly linked list
- * @param void (*freeData)(void*): callback function freeData
  * @return void
  */
-void dll_clear(DLL *list, void (*freeData)(void*) )
+void dll_clear(DLL *list)
 {
-	assert(freeData);
-
 	if(list)
 	{
 		Node *n = list->head;
@@ -707,7 +723,7 @@ void dll_clear(DLL *list, void (*freeData)(void*) )
 		{
 			Node *del = n;
 			n = n->next;
-			dll_freeNode(del, freeData);
+			dll_freeNode(list, del);
 		}
 		list->head = list->tail = list->curr = NULL;
 		list->size = 0;
@@ -741,17 +757,14 @@ void dll_reverse(DLL *list)
 /**
  * Sorts the list with the insertion sort algorithm.
  *
- * Uses a callback function to compare the data strucures.
- * The order of the nodes is defined through the compare function.
+ * The order of the nodes is defined through the compareData function.
  *
  * @param DLL *list: pointer to the doubly linked list
- * @param int (*compare)(void*, void*): callback function compare
  * @return void
  */
-void dll_sort(DLL *list, int (*compare)(void*, void*) )
+void dll_sort(DLL *list)
 {
 	assert(list);
-	assert(compare);
 
 	Node *i = list->head, *j, *tmp;
 	while(i)
@@ -760,7 +773,7 @@ void dll_sort(DLL *list, int (*compare)(void*, void*) )
 
 		while(j)
 		{
-			if(compare(tmp->data, j->data) == 1)
+			if(list->compareData(tmp->data, j->data) == 1)
 				tmp = j;
 			j = j->next;
 		}
@@ -775,20 +788,16 @@ void dll_sort(DLL *list, int (*compare)(void*, void*) )
 /**
  * Prints the list.
  *
- * A callback function is used to print the data strucure.
- *
  * @param DLL *list: pointer to the doubly linked list
- * @param void (*printData)(void*): callback function printData
  * @return void
  */
-void dll_print(DLL *list, void (*printData)(void*) )
+void dll_print(DLL *list)
 {
 	assert(list);
-	assert(printData);
 
 	printf("--- head ---\n");
 
-	dll_traverse(list, printData);
+	dll_traverse(list, list->printData);
 
 	printf("--- tail ---\n");
 }

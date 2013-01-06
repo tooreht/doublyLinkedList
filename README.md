@@ -5,6 +5,9 @@ This is an implementation of a doubly linked list in the C programming language.
 The current features of the implementation are:
 
 - create dll
+- registerCompareData
+- registerFreeData
+- registerPrintData
 - head
 - tail
 - curr

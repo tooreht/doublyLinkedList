@@ -48,7 +48,7 @@
  */
 
  /* data structure */
- typedef struct Person
+ typedef struct
  {
  	char* firstname;
  	char* lastname;
@@ -101,7 +101,7 @@ void freeData(void *data)
  * 	 0: if first and second are equal
  * 	 1: if first is lower than second
  */
-int compare(void *first_arg, void *second_arg)
+int compareData(void *first_arg, void *second_arg)
 {
 	Person *p1 = (Person *)first_arg;
 	Person *p2 = (Person *)second_arg;
@@ -159,6 +159,9 @@ int main(int argc, char const *argv[])
 {
 	// creating a new list
 	DLL *list = dll_create();
+	dll_registerCompareData(list, compareData);
+	dll_registerFreeData(list, freeData);
+	dll_registerPrintData(list, printData);
 
 	// ask for the number of persons to enter
 	puts("How many persons do you like to enter?");
@@ -176,7 +179,7 @@ int main(int argc, char const *argv[])
 	}
 
 	// print data
-	dll_print(list, printData);
+	dll_print(list);
 	puts("");
 
 	// reverse the list
@@ -192,7 +195,7 @@ int main(int argc, char const *argv[])
 
 
 	puts("sort");
-	dll_sort(list, compare);
+	dll_sort(list);
 
 	// use dll iterator functions in a while loop to print the sorted list
 	n = dll_head(list);
@@ -203,7 +206,7 @@ int main(int argc, char const *argv[])
 	}
 
 	// empty the whole list
-	dll_clear(list, freeData);
+	dll_clear(list);
 
 
 	return 0;
