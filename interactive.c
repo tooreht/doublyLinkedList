@@ -1,6 +1,8 @@
 /**
  *  doublyLinkedList
  *
+ *  https://github.com/tooreht/doublyLinkedList
+ *
  *	@file   interactive.c
  *	@author Marc Zimmermann (tooreht@gmail.com)
  *	@date   December, 2012
@@ -61,13 +63,15 @@ void usage(void)
 	puts("");
 	puts("pushHead 1\tpush an integer to the head of the list");
 	puts("pushTail 1\tpush an integer to the tail of the list");
-	puts("find 1\t\tsearch after an integer in the list");
+	puts("find 1\t\tsearch for an integer in the list");
 	puts("del 1\t\tdelete an integer in the list");
 	puts("perform 10\tdo some performance testing with a number of elements");
 	puts("");
 	puts("before 1 2\tadd integer 2 before integer 1 in the list");
 	puts("after 1 2\tadd integer 2 after integer 1 in the list");
 	puts("fill 10 20\tfill the list with integers from 10 to 20");
+	puts("find 10 1|2|3\tsearch for an integer in the list with a specific search mode");
+	puts("\t\t(modes: 1=head to tail, 2=tail to head, 3=head and tail)");
 }
 
 /**

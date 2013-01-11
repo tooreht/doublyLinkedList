@@ -1,6 +1,8 @@
 /**
  *  doublyLinkedList
  *
+ *  https://github.com/tooreht/doublyLinkedList
+ *
  * 	@file   dll.h
  * 	@author Marc Zimmermann (tooreht@gmail.com)
  * 	@date   December, 2012
@@ -22,14 +24,14 @@
  *  along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-typedef struct Node Node;
-struct Node {
+typedef struct Node
+{
 	void *data;
 	struct Node *prev;
 	struct Node *next;
-};
+} Node;
 
-typedef struct
+typedef struct doublyLinkedList
 {
 	Node *head;
 	Node *tail;
@@ -54,9 +56,9 @@ int dll_hasPrev(DLL *list);
 Node* dll_prev(DLL *list);
 void dll_traverse(DLL *list, void (*callback)(void*) );
 int dll_contains(DLL *list, Node *node);
-Node* searchHeadToTail(DLL *list, void *data);
-Node* searchTailToHead(DLL *list, void *data);
-Node* searchHeadAndTail(DLL *list, void *data);
+Node* dll_searchHeadToTail(DLL *list, void *data);
+Node* dll_searchTailToHead(DLL *list, void *data);
+Node* dll_searchHeadAndTail(DLL *list, void *data);
 Node* dll_search(DLL *list, void *data, int mode);
 Node* dll_pushHead(DLL *list, void *data);
 Node* dll_pushTail(DLL *list, void *data);

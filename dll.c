@@ -1,6 +1,8 @@
 /**
  *  doublyLinkedList
  *
+ *  https://github.com/tooreht/doublyLinkedList
+ *
  * 	@file   dll.c
  * 	@author Marc Zimmermann (tooreht@gmail.com)
  * 	@date   December, 2012
@@ -276,9 +278,10 @@ int dll_contains(DLL *list, Node *node)
  * @param void *data: data pointer
  * @return Node*: pointer to the found node
  */
-Node* searchHeadToTail(DLL *list, void *data)
+Node* dll_searchHeadToTail(DLL *list, void *data)
 {
 	assert(list);
+	assert(list->compareData);
 	assert(data);
 	
 	Node *n = list->head;
@@ -303,9 +306,10 @@ Node* searchHeadToTail(DLL *list, void *data)
  * @param void *data: data pointer
  * @return Node*: pointer to the found node
  */
-Node* searchTailToHead(DLL *list, void *data)
+Node* dll_searchTailToHead(DLL *list, void *data)
 {
 	assert(list);
+	assert(list->compareData);
 	assert(data);
 	
 	Node *n = list->tail;
@@ -330,9 +334,10 @@ Node* searchTailToHead(DLL *list, void *data)
  * @param void *data: data pointer
  * @return Node*: pointer to the found node
  */
-Node* searchHeadAndTail(DLL *list, void *data)
+Node* dll_searchHeadAndTail(DLL *list, void *data)
 {
 	assert(list);
+	assert(list->compareData);
 	assert(data);
 
 	Node *i = list->head, *j = list->tail;
@@ -389,14 +394,14 @@ Node* dll_search(DLL *list, void *data, int mode)
 	switch(mode)
 	{
 		case 3:
-			search = searchHeadAndTail(list, data);
+			search = dll_searchHeadAndTail(list, data);
 			break;
 		case 2:
-			search = searchTailToHead(list, data);
+			search = dll_searchTailToHead(list, data);
 			break;
 		case 1:
 		default:
-			search = searchHeadToTail(list, data);
+			search = dll_searchHeadToTail(list, data);
 	}
 
 	return list->curr = search;
@@ -592,6 +597,7 @@ Node* dll_addAfter(DLL *list, Node *node, void *data)
 void dll_freeNode(DLL *list, Node *node)
 {
 	assert(list);
+	assert(list->freeData);
 	assert(node);
 
 	list->freeData(node->data);
@@ -763,6 +769,7 @@ void dll_reverse(DLL *list)
 void dll_sort(DLL *list)
 {
 	assert(list);
+	assert(list->compareData);
 
 	Node *i = list->head, *j, *tmp;
 	while(i)
@@ -792,6 +799,7 @@ void dll_sort(DLL *list)
 void dll_print(DLL *list)
 {
 	assert(list);
+	assert(list->printData);
 
 	printf("--- head ---\n");
 

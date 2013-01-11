@@ -1,6 +1,8 @@
 /**
  *  doublyLinkedList
  *
+ *  https://github.com/tooreht/doublyLinkedList
+ *
  *	@file   sample.c
  *	@author Marc Zimmermann (tooreht@gmail.com)
  *	@date   December, 2012
