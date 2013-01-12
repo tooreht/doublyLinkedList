@@ -187,8 +187,7 @@ int main(int argc, char const *argv[])
 	dll_reverse(list);
 
 	// use dll iterator functions in a for loop to print the reversed list
-	Node *n;
-	for(n = dll_head(list); dll_hasNext(list); dll_next(list))
+	for(dll_head(list); dll_hasNext(list); dll_next(list))
 	{
 		printData(list->curr->data);
 	}
@@ -198,7 +197,7 @@ int main(int argc, char const *argv[])
 	dll_sort(list);
 
 	// use dll iterator functions in a while loop to print the sorted list
-	n = dll_head(list);
+	dll_head(list);
 	while(dll_hasNext(list))
 	{
 		printData(list->curr->data);
