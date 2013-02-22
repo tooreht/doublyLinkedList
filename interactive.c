@@ -57,16 +57,18 @@ void usage(void)
 	puts("hasPrev\t\tprint if list has a previous node");
 	puts("reverse\t\treverse the list");
 	puts("sort\t\tsort the list in ascending order");
-	puts("popHead\t\tpop the first node");
-	puts("popTail\t\tpop the last node");
+	puts("popHead (poh)\t\tpop the first node");
+	puts("popTail(pot)\t\tpop the last node");
 	puts("clear\t\tclear the whole list");
 	puts("");
-	puts("pushHead 1\tpush an integer to the head of the list");
-	puts("pushTail 1\tpush an integer to the tail of the list");
+    puts("get 1 \t\tget the node at the index");
+	puts("pushHead 1 (ph)\tpush an integer to the head of the list");
+	puts("pushTail 1 (pt)\tpush an integer to the tail of the list");
 	puts("find 1\t\tsearch for an integer in the list");
 	puts("del 1\t\tdelete an integer in the list");
 	puts("perform 10\tdo some performance testing with a number of elements");
 	puts("");
+    puts("set 1 2 \tset the node at the index 1 to 2");
 	puts("before 1 2\tadd integer 2 before integer 1 in the list");
 	puts("after 1 2\tadd integer 2 after integer 1 in the list");
 	puts("fill 10 20\tfill the list with integers from 10 to 20");
@@ -315,22 +317,33 @@ void perform(int elements)
  */
 void fill(int beg, int end)
 {
-	if(beg > end)
-		return;
-
-	clock_t start = clock();
-
 	int *integer;
 	void *data;
+    int i;
 
-	int i;
-	for(i = beg; i <= end; i++)
-	{
-		integer = malloc(sizeof(int));
-		*integer = i;
-		data = integer;
-		dll_pushTail(list, data);
-	}
+    clock_t start = clock();
+	
+    if(beg > end)
+    {
+        for(i = beg; i >= end; i--)
+        {
+            integer = malloc(sizeof(int));
+            *integer = i;
+            data = integer;
+            dll_pushTail(list, data);
+        }
+
+    }
+    else
+    {
+        for(i = beg; i <= end; i++)
+        {
+            integer = malloc(sizeof(int));
+            *integer = i;
+            data = integer;
+            dll_pushTail(list, data);
+        }
+   }
 
 	double elapsed = ( (double)clock() - start ) / CLOCKS_PER_SEC;
 	printf("Filling finished in %f s\n", elapsed);
@@ -431,11 +444,11 @@ void executeDll(int nargs, char *command, int arg1, int arg2)
 			{
 				dll_sort(list);
 			}
-			else if(!strcmp(command, "popHead"))
+			else if(!strcmp(command, "popHead") || !strcmp(command, "poh"))
 			{
 				dll_popHead(list);
 			}
-			else if(!strcmp(command, "popTail"))
+			else if(!strcmp(command, "popTail") || !strcmp(command, "pot"))
 			{
 				dll_popTail(list);
 			}
@@ -454,11 +467,16 @@ void executeDll(int nargs, char *command, int arg1, int arg2)
 			}
 			break;
 		case 2:
-			if(!strcmp(command, "pushHead"))
+           	if(!strcmp(command, "get"))
+			{
+                Node *n = dll_get(list, *d1);
+				printData(n->data);
+			}
+            else if(!strcmp(command, "pushHead") || !strcmp(command, "puh"))
 			{
 				dll_pushHead(list, a1);
 			}
-			else if(!strcmp(command, "pushTail"))
+			else if(!strcmp(command, "pushTail") || !strcmp(command, "put"))
 			{
 				dll_pushTail(list, a1);
 			}
@@ -487,7 +505,11 @@ void executeDll(int nargs, char *command, int arg1, int arg2)
 			}
 			break;
 		case 3:
-			if(!strcmp(command, "before"))
+           	if(!strcmp(command, "set"))
+			{
+                dll_set(list, *d1, a2);
+			}
+            else if(!strcmp(command, "before"))
 			{
 				Node *n = dll_search(list, a1, 1);
 				if(n)

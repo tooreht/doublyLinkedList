@@ -272,6 +272,40 @@ int dll_contains(DLL *list, Node *node)
 }
 
 /**
+ * Gets the node at the index.
+ *
+ * @param DLL *list: pointer to the doubly linked list
+ * @param unsigned long index: index
+ * @return Node*: pointer to the pushed node
+ */
+Node* dll_get(DLL *list, unsigned long index)
+{
+   assert(list);
+   assert(index < list->size);
+
+   if(index < list->size / 2)
+   {
+       list->curr = list->head;
+ 
+       while(index--)
+       {
+           list->curr = list->curr->next;
+       }
+   }
+   else
+   {
+       index = list->size - index - 1;
+       list->curr = list->tail;
+
+       while(index--)
+       {
+           list->curr = list->curr->prev;
+       }
+   }
+   return list->curr;
+}
+
+/**
  * Searches for data from head to tail.
  *
  * @param DLL *list: pointer to the doubly linked list
@@ -446,6 +480,43 @@ Node* dll_addFirstNode(DLL *list, void *data)
 
 	list->size = 1;
 	return list->head = list->tail = list->curr = dll_createNode(data);
+}
+
+/**
+ * Sets the node at the index to a specific value.
+ *
+ * @param DLL *list: pointer to the doubly linked list
+ * @param unsigned long index: index
+ * @param void *data: data pointer
+ * @return Node*: pointer to the pushed node
+ */
+Node* dll_set(DLL *list, unsigned long index, void *data)
+{
+    assert(list);
+    assert(index < list->size);
+
+    if(index < list->size / 2)
+    {
+        list->curr = list->head;
+  
+        while(index--)
+        {
+            list->curr = list->curr->next;
+        }
+    }
+    else
+    {
+        index = list->size - index - 1;
+        list->curr = list->tail;
+
+        while(index--)
+        {
+            list->curr = list->curr->prev;
+        }
+    }
+    list->curr->data = data;
+
+    return list->curr;
 }
 
 /**

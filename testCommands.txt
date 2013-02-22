@@ -13,7 +13,6 @@ sort
 popHead
 popTail
 clear
-
 pushHead 1
 popHead
 pushTail 1
@@ -22,11 +21,17 @@ find 1
 del 1
 before 1 2
 after 1 2
-
 fill 1 8
 before 1 0
 after 8 9
 clear
-
+pushHead 1
+pushTail 2
+set 1 77
+set 0 33
+get 0
+get 1
+popHead
+popTail
 perform 10
 clear

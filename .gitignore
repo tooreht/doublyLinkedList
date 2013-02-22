@@ -6,4 +6,6 @@ interactive
 
 *.plist
 
+*.swp
+
 .DS_Store
