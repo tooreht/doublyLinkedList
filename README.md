@@ -20,7 +20,9 @@ The current features of the implementation are:
 - searchHeadToTail
 - searchTailToHead
 - searchHeadAndTail
+- get
 - search dll
+- set
 - pushHead
 - pushTail
 - addBefore

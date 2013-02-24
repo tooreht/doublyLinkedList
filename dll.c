@@ -418,7 +418,7 @@ Node* dll_searchHeadAndTail(DLL *list, void *data)
  * @param int mode: search mode
  * @return Node*: pointer to the found node
  */
-Node* dll_search(DLL *list, void *data, int mode)
+Node* dll_search(DLL *list, void *data, short int mode)
 {
 	assert(list);
 	assert(data);
@@ -681,14 +681,15 @@ void dll_freeNode(DLL *list, Node *node)
  *
  * @param DLL *list: pointer to the doubly linked list
  * @param void *data: data pointer
+ * @param int mode: search mode
  * @return void
  */
-void dll_delete(DLL *list, void *data)
+void dll_delete(DLL *list, void *data, short int mode)
 {
 	assert(list);
 	assert(data);
 
-	Node *found = dll_search(list, data, 0);
+	Node *found = dll_search(list, data, mode);
 
 	if(found)
 	{

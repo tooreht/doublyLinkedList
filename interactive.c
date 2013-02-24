@@ -277,7 +277,7 @@ void perform(int elements)
 	// for(i = 0; i < elements; i++)
 	// {
 	// 	data = &i;
-	// 	dll_delete(list, data);
+	// 	dll_delete(list, data, 0);
 	// }
 
 	// puts("delete dll with while loop 'iterator' head to tail");
@@ -493,7 +493,7 @@ void executeDll(int nargs, char *command, int arg1, int arg2)
 			}
 			else if(!strcmp(command, "del"))
 			{
-				dll_delete(list, a1);
+				dll_delete(list, a1, 0);
 			}
 			else if(!strcmp(command, "perform"))
 			{
@@ -535,6 +535,10 @@ void executeDll(int nargs, char *command, int arg1, int arg2)
 					printData(found->data);
 				else
 					printf("Node with data %d couldn't be found\n", arg1);
+			}
+			else if(!strcmp(command, "del"))
+			{
+				dll_delete(list, a1, *d2);
 			}
 			else if(!strcmp(command, "fill"))
 			{
