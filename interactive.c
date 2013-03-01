@@ -273,11 +273,11 @@ void perform(int elements)
 		printf("%d\n", *(int*)n->data);
 	}
 
-	// puts("delete dll with for loop 'conventional' (dll_delete is slow because of searching data)");
+	// puts("delete dll with for loop 'conventional' (dll_searchAndDelete is slow because of searching data)");
 	// for(i = 0; i < elements; i++)
 	// {
 	// 	data = &i;
-	// 	dll_delete(list, data, 0);
+	// 	dll_searchAndDelete(list, data, 0);
 	// }
 
 	// puts("delete dll with while loop 'iterator' head to tail");
@@ -480,6 +480,10 @@ void executeDll(int nargs, char *command, int arg1, int arg2)
 			{
 				dll_pushTail(list, a1);
 			}
+			else if(!strcmp(command, "del"))
+			{
+				dll_delete(list, *d1);
+			}
 			else if(!strcmp(command, "find"))
 			{
 				clock_t start = clock();
@@ -491,9 +495,9 @@ void executeDll(int nargs, char *command, int arg1, int arg2)
 				else
 					printf("Node with data %d couldn't be found\n", arg1);
 			}
-			else if(!strcmp(command, "del"))
+			else if(!strcmp(command, "sad"))
 			{
-				dll_delete(list, a1, 0);
+				dll_searchAndDelete(list, a1, 0);
 			}
 			else if(!strcmp(command, "perform"))
 			{
@@ -536,9 +540,9 @@ void executeDll(int nargs, char *command, int arg1, int arg2)
 				else
 					printf("Node with data %d couldn't be found\n", arg1);
 			}
-			else if(!strcmp(command, "del"))
+			else if(!strcmp(command, "sad"))
 			{
-				dll_delete(list, a1, *d2);
+				dll_searchAndDelete(list, a1, *d2);
 			}
 			else if(!strcmp(command, "fill"))
 			{

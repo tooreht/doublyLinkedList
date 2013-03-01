@@ -18,7 +18,7 @@ popHead
 pushTail 1
 popTail
 find 1
-del 1
+sad 1
 before 1 2
 after 1 2
 fill 1 8

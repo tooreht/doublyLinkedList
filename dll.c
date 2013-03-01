@@ -37,6 +37,7 @@
  */
 static Node* dll_createNode(void *data);
 static Node* dll_addFirstNode(DLL *list, void *data);
+static void dll_freeNode(DLL *list, Node *del);
 
 /**
  * Creates a new doubly linked list.
@@ -66,6 +67,7 @@ DLL* dll_create(void)
  *
  * @param DLL *list: pointer to the doubly linked list
  * @param int (*compareData)(void*, void*): callback function compareData
+ * @return void
  */
 void dll_registerCompareData(DLL *list, int (*compareData)(void*, void*) )
 {
@@ -80,6 +82,7 @@ void dll_registerCompareData(DLL *list, int (*compareData)(void*, void*) )
  *
  * @param DLL *list: pointer to the doubly linked list
  * @param int (*compareData)(void*, void*): callback function compareData
+ * @return void
  */
 void dll_registerFreeData(DLL *list, void (*freeData)(void*) )
 {
@@ -94,6 +97,7 @@ void dll_registerFreeData(DLL *list, void (*freeData)(void*) )
  *
  * @param DLL *list: pointer to the doubly linked list
  * @param int (*compareData)(void*, void*): callback function compareData
+ * @return void
  */
 void dll_registerPrintData(DLL *list, void (*printData)(void*) )
 {
@@ -161,7 +165,7 @@ unsigned long dll_size(DLL *list)
  * @param DLL *list: pointer to the doubly linked list
  * @return int: has next
  */
-int dll_hasNext(DLL *list)
+short int dll_hasNext(DLL *list)
 {
 	assert(list);
 
@@ -195,7 +199,7 @@ Node* dll_next(DLL *list)
  * @param DLL *list: pointer to the doubly linked list
  * @return int: has previous
  */
-int dll_hasPrev(DLL *list)
+short int dll_hasPrev(DLL *list)
 {
 	assert(list);
 
@@ -252,7 +256,7 @@ void dll_traverse(DLL *list, void (*callback)(void*) )
  * @param Node *node: node to test against
  * @return int: success
  */
-int dll_contains(DLL *list, Node *node)
+short int dll_contains(DLL *list, Node *node)
 {
 	assert(list);
 
@@ -302,6 +306,7 @@ Node* dll_get(DLL *list, unsigned long index)
            list->curr = list->curr->prev;
        }
    }
+
    return list->curr;
 }
 
@@ -479,6 +484,7 @@ Node* dll_addFirstNode(DLL *list, void *data)
 	assert(data);
 
 	list->size = 1;
+
 	return list->head = list->tail = list->curr = dll_createNode(data);
 }
 
@@ -489,31 +495,10 @@ Node* dll_addFirstNode(DLL *list, void *data)
  * @param unsigned long index: index
  * @param void *data: data pointer
  * @return Node*: pointer to the pushed node
- */
+za */
 Node* dll_set(DLL *list, unsigned long index, void *data)
 {
-    assert(list);
-    assert(index < list->size);
-
-    if(index < list->size / 2)
-    {
-        list->curr = list->head;
-  
-        while(index--)
-        {
-            list->curr = list->curr->next;
-        }
-    }
-    else
-    {
-        index = list->size - index - 1;
-        list->curr = list->tail;
-
-        while(index--)
-        {
-            list->curr = list->curr->prev;
-        }
-    }
+    list->curr = dll_get(list, index);
     list->curr->data = data;
 
     return list->curr;
@@ -665,15 +650,52 @@ Node* dll_addAfter(DLL *list, Node *node, void *data)
  * @param Node *node: node to free
  * @return void
  */
-void dll_freeNode(DLL *list, Node *node)
+void dll_freeNode(DLL *list, Node *del)
 {
 	assert(list);
 	assert(list->freeData);
-	assert(node);
 
-	list->freeData(node->data);
-	node->prev = node->next = node->data = NULL;
-	free(node);
+	if(del && list->size)
+	{
+        if(list->head == list->tail)
+            list->head = list->tail = NULL;
+        else if(del == list->head)
+        {
+            list->head = del->next;
+            list->head->prev = NULL;
+        }
+        else if(del == list->tail)
+        {
+            list->tail = del->prev;
+            list->tail->next = NULL;
+        }
+        else
+        {
+            del->prev->next = del->next;
+            del->next->prev = del->prev;
+        }
+
+        if(del == list->curr)
+            list->curr = NULL;
+
+        list->freeData(del->data);
+        del->prev = del->next = del->data = NULL;
+        free(del);
+
+        list->size--;
+    }
+}
+
+/**
+ * Deletes the node at the specific index.
+ *
+ * @param DLL *list: pointer to the doubly linked list
+ * @param unsigned long index: index
+ * @return void
+ */
+void dll_delete(DLL *list, unsigned long index)
+{
+    dll_freeNode(list, dll_get(list, index));
 }
 
 /**
@@ -684,7 +706,7 @@ void dll_freeNode(DLL *list, Node *node)
  * @param int mode: search mode
  * @return void
  */
-void dll_delete(DLL *list, void *data, short int mode)
+void dll_searchAndDelete(DLL *list, void *data, short int mode)
 {
 	assert(list);
 	assert(data);
@@ -693,29 +715,7 @@ void dll_delete(DLL *list, void *data, short int mode)
 
 	if(found)
 	{
-		if(list->head == list->tail)
-			list->head = list->tail = NULL;
-		else if(found == list->head)
-		{
-			list->head = found->next;
-			list->head->prev = NULL;
-		}
-		else if(found == list->tail)
-		{
-			list->tail = found->prev;
-			list->tail->next = NULL;
-		}
-		else
-		{
-			found->prev->next = found->next;
-			found->next->prev = found->prev;
-		}
-
-		if(found == list->curr)
-			list->curr = NULL;
-
-		dll_freeNode(list, found);
-		list->size--;
+        dll_freeNode(list, found);
 	}
 }
 
@@ -730,25 +730,7 @@ void dll_popHead(DLL *list)
 	assert(list);
 
 	Node *del = list->head;
-
-	if(list->size)
-	{
-		if(list->head == list->tail)
-		{
-			list->head = list->tail = NULL;
-		}
-		else
-		{
-			list->head = del->next;
-			list->head->prev = NULL;
-		}
-
-		if(del == list->curr)
-			list->curr = NULL;
-
-		dll_freeNode(list, del);
-		list->size--;
-	}
+	dll_freeNode(list, del);
 }
 
 /**
@@ -762,25 +744,7 @@ void dll_popTail(DLL *list)
 	assert(list);
 
 	Node *del = list->tail;
-
-	if(list->size)
-	{
-		if(list->head == list->tail)
-		{
-			list->head = list->tail = NULL;
-		}
-		else
-		{
-			list->tail = del->prev;
-			list->tail->next = NULL;
-		}
-
-		if(del == list->curr)
-			list->curr = NULL;
-
-		dll_freeNode(list, del);
-		list->size--;
-	}
+	dll_freeNode(list, del);
 }
 
 /**
@@ -801,8 +765,6 @@ void dll_clear(DLL *list)
 			n = n->next;
 			dll_freeNode(list, del);
 		}
-		list->head = list->tail = list->curr = NULL;
-		list->size = 0;
 		free(list);
 	}
 }
