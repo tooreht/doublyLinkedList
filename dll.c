@@ -729,8 +729,7 @@ void dll_popHead(DLL *list)
 {
 	assert(list);
 
-	Node *del = list->head;
-	dll_freeNode(list, del);
+	dll_freeNode(list, list->head);
 }
 
 /**
@@ -743,8 +742,7 @@ void dll_popTail(DLL *list)
 {
 	assert(list);
 
-	Node *del = list->tail;
-	dll_freeNode(list, del);
+	dll_freeNode(list, list->tail);
 }
 
 /**
