@@ -43,9 +43,9 @@ typedef struct doublyLinkedList
 } DLL;
 
 DLL* dll_create();
-void dll_registerCompareData(DLL *list, int (*compareData)(void*, void*) );
-void dll_registerFreeData(DLL *list, void (*freeData)(void*) );
-void dll_registerPrintData(DLL *list, void (*printData)(void*) );
+void dll_registerCompareFn(DLL *list, int (*compareData)(void*, void*) );
+void dll_registerFreeFn(DLL *list, void (*freeData)(void*) );
+void dll_registerPrintFn(DLL *list, void (*printData)(void*) );
 Node* dll_head(DLL *list);
 Node* dll_tail(DLL *list);
 Node* dll_curr(DLL *list);

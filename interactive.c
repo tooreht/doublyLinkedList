@@ -3,13 +3,13 @@
  *
  *  https://github.com/tooreht/doublyLinkedList
  *
- *	@file   interactive.c
- *	@author Marc Zimmermann (tooreht@gmail.com)
- *	@date   December, 2012
- *	@brief  Interactive testing of doublyLinkedList.
+ *  @file   interactive.c
+ *  @author Marc Zimmermann (tooreht@gmail.com)
+ *  @date   December, 2012
+ *  @brief  Interactive testing of doublyLinkedList.
  *
- *	This programm reads command lines from stdin and executes them.
- *	It's purpose is to interactively test the implementation of the data structure.
+ *  This programm reads command lines from stdin and executes them.
+ *  It's purpose is to interactively test the implementation of the data structure.
  *
  *  This program is free software: you can redistribute it and/or modify
  *  it under the terms of the GNU General Public License as published by
@@ -43,37 +43,40 @@ int *d1, *d2;
  */
 void usage(void)
 {
-	puts("doublyLinkedList usage:");
-	puts("");
-	puts("head\t\tprint the head");
-	puts("tail\t\tprint the tail");
-	puts("curr\t\tprint the current node");
-	puts("size\t\tprint the size");
-	puts("next\t\tprint the next node");
-	puts("prev\t\tprint the previous node");
-	puts("print (p)\tprint the list");
-	puts("info (i)\tprint list info");
-	puts("hasNext\t\tprint if list has a next node");
-	puts("hasPrev\t\tprint if list has a previous node");
-	puts("reverse\t\treverse the list");
-	puts("sort\t\tsort the list in ascending order");
-	puts("popHead (poh)\t\tpop the first node");
-	puts("popTail(pot)\t\tpop the last node");
-	puts("clear\t\tclear the whole list");
-	puts("");
+    puts("doublyLinkedList usage:");
+    puts("");
+    puts("head\t\tprint the head");
+    puts("tail\t\tprint the tail");
+    puts("curr\t\tprint the current node");
+    puts("size\t\tprint the size");
+    puts("next\t\tprint the next node");
+    puts("prev\t\tprint the previous node");
+    puts("print (p)\tprint the list");
+    puts("info (i)\tprint list info");
+    puts("hasNext\t\tprint if list has a next node");
+    puts("hasPrev\t\tprint if list has a previous node");
+    puts("reverse\t\treverse the list");
+    puts("sort\t\tsort the list in ascending order");
+    puts("popHead (poh)\t\tpop the first node");
+    puts("popTail(pot)\t\tpop the last node");
+    puts("clear\t\tclear the whole list");
+    puts("");
     puts("get 1 \t\tget the node at the index");
-	puts("pushHead 1 (ph)\tpush an integer to the head of the list");
-	puts("pushTail 1 (pt)\tpush an integer to the tail of the list");
-	puts("find 1\t\tsearch for an integer in the list");
-	puts("del 1\t\tdelete an integer in the list");
-	puts("perform 10\tdo some performance testing with a number of elements");
-	puts("");
+    puts("pushHead 1 (puh)\tpush an integer to the head of the list");
+    puts("pushTail 1 (put)\tpush an integer to the tail of the list");
+    puts("find 1\t\tsearch for an integer in the list");
+    puts("del 1\t\tdelete an integer in the list");
+    puts("sad 1\t\tsearch and delete an integer in the list");
+    puts("perform 10\tdo some performance testing with a number of elements");
+    puts("");
     puts("set 1 2 \tset the node at the index 1 to 2");
-	puts("before 1 2\tadd integer 2 before integer 1 in the list");
-	puts("after 1 2\tadd integer 2 after integer 1 in the list");
-	puts("fill 10 20\tfill the list with integers from 10 to 20");
-	puts("find 10 1|2|3\tsearch for an integer in the list with a specific search mode");
-	puts("\t\t(modes: 1=head to tail, 2=tail to head, 3=head and tail)");
+    puts("before 1 2\tadd integer 2 before integer 1 in the list");
+    puts("after 1 2\tadd integer 2 after integer 1 in the list");
+    puts("fill 10 20\tfill the list with integers from 10 to 20");
+    puts("find 10 1|2|3\tsearch for an integer in the list with a specific search mode");
+    puts("\t\t(modes: 1=head to tail, 2=tail to head, 3=head and tail)");
+    puts("sad 10 1|2|3\tsearch and delete an integer in the list with a specific search");
+    puts("\t\tmode (modes: 1=head to tail, 2=tail to head, 3=head and tail)");
 }
 
 /**
@@ -84,26 +87,26 @@ void usage(void)
  */
 void readFile(const char *file)
 {
-	FILE *fp; /* declare the file pointer */
-	fp = fopen(file, "rt"); /* open the file for reading */
+    FILE *fp; /* declare the file pointer */
+    fp = fopen(file, "rt"); /* open the file for reading */
 
-	if(fp == NULL)
-	{
-		printf("Cannot open file '%s'\n", file);
-		exit(1);
-	}
+    if(fp == NULL)
+    {
+        printf("Cannot open file '%s'\n", file);
+        exit(1);
+    }
 
-	size_t bytes_read;
-	size_t nbytes = 8;
+    size_t bytes_read;
+    size_t nbytes = 8;
 
-	char *line = (char *) malloc(nbytes + 1);
+    char *line = (char *) malloc(nbytes + 1);
 
-	while( (bytes_read = getline(&line, &nbytes, fp)) != -1)
-	{
-		printf("%s", line);
-	}
+    while( (bytes_read = getline(&line, &nbytes, fp)) != -1)
+    {
+        printf("%s", line);
+    }
 
-	fclose(fp);  /* close the file prior to exiting the routine */
+    fclose(fp);  /* close the file prior to exiting the routine */
 }
 
 /**
@@ -114,16 +117,16 @@ void readFile(const char *file)
  */
 void showWarranty(void)
 {
-	puts("15. Disclaimer of Warranty.");
-	puts("");
-	puts("THERE IS NO WARRANTY FOR THE PROGRAM, TO THE EXTENT PERMITTED BY");
-	puts("APPLICABLE LAW.  EXCEPT WHEN OTHERWISE STATED IN WRITING THE COPYRIGHT");
-	puts("HOLDERS AND/OR OTHER PARTIES PROVIDE THE PROGRAM \"AS IS\" WITHOUT WARRANTY");
-	puts("OF ANY KIND, EITHER EXPRESSED OR IMPLIED, INCLUDING, BUT NOT LIMITED TO,");
-	puts("THE IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR");
-	puts("PURPOSE.  THE ENTIRE RISK AS TO THE QUALITY AND PERFORMANCE OF THE PROGRAM");
-	puts("IS WITH YOU.  SHOULD THE PROGRAM PROVE DEFECTIVE, YOU ASSUME THE COST OF");
-	puts("ALL NECESSARY SERVICING, REPAIR OR CORRECTION.");
+    puts("15. Disclaimer of Warranty.");
+    puts("");
+    puts("THERE IS NO WARRANTY FOR THE PROGRAM, TO THE EXTENT PERMITTED BY");
+    puts("APPLICABLE LAW.  EXCEPT WHEN OTHERWISE STATED IN WRITING THE COPYRIGHT");
+    puts("HOLDERS AND/OR OTHER PARTIES PROVIDE THE PROGRAM \"AS IS\" WITHOUT WARRANTY");
+    puts("OF ANY KIND, EITHER EXPRESSED OR IMPLIED, INCLUDING, BUT NOT LIMITED TO,");
+    puts("THE IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR");
+    puts("PURPOSE.  THE ENTIRE RISK AS TO THE QUALITY AND PERFORMANCE OF THE PROGRAM");
+    puts("IS WITH YOU.  SHOULD THE PROGRAM PROVE DEFECTIVE, YOU ASSUME THE COST OF");
+    puts("ALL NECESSARY SERVICING, REPAIR OR CORRECTION.");
 }
 
 /**
@@ -134,7 +137,7 @@ void showWarranty(void)
  */
 void showConditions(void)
 {
-	readFile("LICENSE.md");
+    readFile("LICENSE.md");
 }
 
 /**
@@ -147,18 +150,18 @@ void showConditions(void)
  */
 void executeGpl(int nargs, char *command, char option)
 {
-	switch(nargs)
-	{
-		case 2:
-			if(!strcmp(command, "show"))
-			{
-				if(option == 'w')
-					showWarranty();
-				else if(option == 'c')
-					showConditions();
-			}
-		break;
-	}
+    switch(nargs)
+    {
+        case 2:
+            if(!strcmp(command, "show"))
+            {
+                if(option == 'w')
+                    showWarranty();
+                else if(option == 'c')
+                    showConditions();
+            }
+            break;
+    }
 }
 
 
@@ -170,7 +173,7 @@ void executeGpl(int nargs, char *command, char option)
  * The data pointer is stored as a void pointer in each node of the list.
  * Thus three callback functions are needed to handle the generic
  * (userdefined) data structure:
- * 
+ *
  * - printing the data
  * - freeing the data from memory
  * - comparing the data structures
@@ -190,7 +193,7 @@ void executeGpl(int nargs, char *command, char option)
  */
 void printData(void *data)
 {
-	printf("%d\n", *(int *) data);
+    printf("%d\n", *(int *) data);
 }
 
 /**
@@ -201,7 +204,7 @@ void printData(void *data)
  */
 void freeData(void *data)
 {
-	free(data);
+    free(data);
 }
 
 /**
@@ -212,21 +215,21 @@ void freeData(void *data)
  * @param void* first_arg
  * @param void* second_arg
  * @return int
- * 	-1: if first is greater than second
- * 	 0: if first and second are equal
- * 	 1: if first is lower than second
+ *  -1: if first is greater than second
+ *   0: if first and second are equal
+ *   1: if first is lower than second
  */
 int compareData(void *first_arg, void *second_arg)
 {
-	int first = *(int *) first_arg;
-	int second = *(int *) second_arg;
+    int first = *(int *) first_arg;
+    int second = *(int *) second_arg;
 
-	if(first < second)
-		return -1;
-	else if(first == second)
-		return 0;
-	else
-		return 1;
+    if(first < second)
+        return -1;
+    else if(first == second)
+        return 0;
+    else
+        return 1;
 }
 
 /**
@@ -237,75 +240,75 @@ int compareData(void *first_arg, void *second_arg)
  */
 void perform(int elements)
 {
-	clock_t start = clock();
+    clock_t start = clock();
 
-	int *integer;
-	void *data;
+    int *integer;
+    void *data;
 
-	puts("fill dll with 'conventional' for loop");
-	int i;
-	for(i = 0; i < elements; i++)
-	{
-		integer = malloc(sizeof(int));
-		*integer = i;
-		data = integer;
-		dll_pushTail(list, data);
-	}
+    puts("fill dll with 'conventional' for loop");
+    int i;
+    for(i = 0; i < elements; i++)
+    {
+        integer = malloc(sizeof(int));
+        *integer = i;
+        data = integer;
+        dll_pushTail(list, data);
+    }
 
-	puts("print dll with 'iterator' while loop head to tail");
-	dll_head(list);
-	while(dll_hasNext(list))
-	{
-		printf("%d\n", *(int*)list->curr->data);
-		dll_next(list);
-	}
-	
-	// puts("sort");
-	// dll_sort(list);
-	puts("reverse");
-	dll_reverse(list);
-	// dll_print(list);
+    puts("print dll with 'iterator' while loop head to tail");
+    dll_head(list);
+    while(dll_hasNext(list))
+    {
+        printf("%d\n", *(int*)list->curr->data);
+        dll_next(list);
+    }
 
-	puts("print dll with 'iterator' for loop tail to head");
-	Node *n = NULL;
-	for(n = dll_tail(list); dll_hasPrev(list); n = dll_prev(list))
-	{
-		printf("%d\n", *(int*)n->data);
-	}
+    // puts("sort");
+    // dll_sort(list);
+    puts("reverse");
+    dll_reverse(list);
+    // dll_print(list);
 
-	// puts("delete dll with for loop 'conventional' (dll_searchAndDelete is slow because of searching data)");
-	// for(i = 0; i < elements; i++)
-	// {
-	// 	data = &i;
-	// 	dll_searchAndDelete(list, data, 0);
-	// }
+    puts("print dll with 'iterator' for loop tail to head");
+    Node *n = NULL;
+    for(n = dll_tail(list); dll_hasPrev(list); n = dll_prev(list))
+    {
+        printf("%d\n", *(int*)n->data);
+    }
 
-	// puts("delete dll with while loop 'iterator' head to tail");
-	// dll_head(list);
-	// while(dll_hasNext(list))
-	// {
-	// 	dll_next(list);
-	// 	dll_popHead(list);
-	// }
+    // puts("delete dll with for loop 'conventional' (dll_searchAndDelete is slow because of searching data)");
+    // for(i = 0; i < elements; i++)
+    // {
+    //  data = &i;
+    //  dll_searchAndDelete(list, data, 0);
+    // }
 
-	int contains = 1;
-	void *d = &contains;
-	Node *node = dll_search(list, d, 1);
-	printf("contains %d\n", dll_contains(list, node));
+    // puts("delete dll with while loop 'iterator' head to tail");
+    // dll_head(list);
+    // while(dll_hasNext(list))
+    // {
+    //  dll_next(list);
+    //  dll_popHead(list);
+    // }
 
-	puts("delete dll with 'iterator' while loop tail to head");
-	dll_tail(list);
-	while(dll_hasPrev(list))
-	{
-		dll_prev(list);
-		dll_popTail(list);
-	}
+    int contains = 1;
+    void *d = &contains;
+    Node *node = dll_search(list, d, 1);
+    printf("contains %d\n", dll_contains(list, node));
 
-	puts("print list");
-	dll_print(list);
+    puts("delete dll with 'iterator' while loop tail to head");
+    dll_tail(list);
+    while(dll_hasPrev(list))
+    {
+        dll_prev(list);
+        dll_popTail(list);
+    }
 
-	double elapsed = ( (double)clock() - start ) / CLOCKS_PER_SEC;
-	printf("Performance with %d elements finished in %f s\n", elements, elapsed);
+    puts("print list");
+    dll_print(list);
+
+    double elapsed = ( (double)clock() - start ) / CLOCKS_PER_SEC;
+    printf("Performance with %d elements finished in %f s\n", elements, elapsed);
 }
 
 /**
@@ -317,12 +320,12 @@ void perform(int elements)
  */
 void fill(int beg, int end)
 {
-	int *integer;
-	void *data;
+    int *integer;
+    void *data;
     int i;
 
     clock_t start = clock();
-	
+
     if(beg > end)
     {
         for(i = beg; i >= end; i--)
@@ -343,10 +346,10 @@ void fill(int beg, int end)
             data = integer;
             dll_pushTail(list, data);
         }
-   }
+    }
 
-	double elapsed = ( (double)clock() - start ) / CLOCKS_PER_SEC;
-	printf("Filling finished in %f s\n", elapsed);
+    double elapsed = ( (double)clock() - start ) / CLOCKS_PER_SEC;
+    printf("Filling finished in %f s\n", elapsed);
 }
 
 /**
@@ -360,201 +363,207 @@ void fill(int beg, int end)
  */
 void executeDll(int nargs, char *command, int arg1, int arg2)
 {
-	d1 = malloc(sizeof(int));
-	d2 = malloc(sizeof(int));
+    d1 = malloc(sizeof(int));
+    d2 = malloc(sizeof(int));
 
-	*d1 = arg1;
-	*d2 = arg2;
+    *d1 = arg1;
+    *d2 = arg2;
 
-	void *a1, *a2;
+    void *a1, *a2;
 
-	a1 = d1;
-	a2 = d2;
+    a1 = d1;
+    a2 = d2;
 
-	if(!list)
-	{
-		list = dll_create();
-		dll_registerCompareData(list, compareData);
-		dll_registerFreeData(list, freeData);
-		dll_registerPrintData(list, printData);
-	}
+    if(!list)
+    {
+        list = dll_create();
+        dll_registerCompareFn(list, compareData);
+        dll_registerFreeFn(list, freeData);
+        dll_registerPrintFn(list, printData);
+    }
 
-	switch(nargs)
-	{
-		case 1:
-			if(!strcmp(command, "head"))
-			{
-				Node *head = dll_head(list);
-				printf("head\t%p %d\n", head, head ? *(int*)head->data : -1);
-			}
-			else if(!strcmp(command, "tail"))
-			{
-				Node *tail = dll_tail(list);
-				printf("tail\t%p %d\n", tail, tail ? *(int*)tail->data : -1);
-			}
-			else if(!strcmp(command, "curr"))
-			{
-				Node *curr = dll_curr(list);
-				printf("curr\t%p %d\n", curr, curr ? *(int*)curr->data : -1);
-			}
-			else if(!strcmp(command, "size"))
-			{
-				printf("size\t%ld\n", dll_size(list));
-			}
-			else if(!strcmp(command, "hasNext"))
-			{
-				if(dll_hasNext(list))
-					puts("yes");
-				else
-					puts("no");
-			}
-			else if(!strcmp(command, "next"))
-			{
-				Node *next = dll_next(list);
-				printf("next\t%p %d\n", next, next ? *(int*)next->data : -1);
-			}
-			else if(!strcmp(command, "hasPrev"))
-			{
-				if(dll_hasPrev(list))
-					puts("yes");
-				else
-					puts("no");
-			}
-			else if(!strcmp(command, "prev"))
-			{
-				Node *prev = dll_prev(list);
-				printf("prev\t%p %d\n", prev, prev ? *(int*)prev->data : -1);
-			}
-			else if(!strcmp(command, "print") || !strcmp(command, "p"))
-			{
-				dll_print(list);
-			}
-			else if(!strcmp(command, "info") || !strcmp(command, "i"))
-			{
-				printf("head\t%p %d\n", list->head, list->head ? *(int*)list->head->data : -1);
-				printf("tail\t%p %d\n", list->tail, list->tail ? *(int*)list->tail->data : -1);
-				printf("curr\t%p %d\n", list->curr, list->curr ? *(int*)list->curr->data : -1);
-				printf("size\t%ld\n", dll_size(list));
-			}
-			else if(!strcmp(command, "reverse"))
-			{
-				dll_reverse(list);
-			}
-			else if(!strcmp(command, "sort"))
-			{
-				dll_sort(list);
-			}
-			else if(!strcmp(command, "popHead") || !strcmp(command, "poh"))
-			{
-				dll_popHead(list);
-			}
-			else if(!strcmp(command, "popTail") || !strcmp(command, "pot"))
-			{
-				dll_popTail(list);
-			}
-			else if(!strcmp(command, "clear"))
-			{
-				dll_clear(list);
-				list = NULL;
-			}
-			else if(!strcmp(command, "show"))
-			{
-				// do absolutely nothing
-			}
-			else
-			{
-				usage();
-			}
-			break;
-		case 2:
-           	if(!strcmp(command, "get"))
-			{
+    switch(nargs)
+    {
+        case 1:
+            if(!strcmp(command, "head"))
+            {
+                Node *head = dll_head(list);
+                printf("head\t%p %d\n", head, head ? *(int*)head->data : -1);
+            }
+            else if(!strcmp(command, "tail"))
+            {
+                Node *tail = dll_tail(list);
+                printf("tail\t%p %d\n", tail, tail ? *(int*)tail->data : -1);
+            }
+            else if(!strcmp(command, "curr"))
+            {
+                Node *curr = dll_curr(list);
+                printf("curr\t%p %d\n", curr, curr ? *(int*)curr->data : -1);
+            }
+            else if(!strcmp(command, "size"))
+            {
+                printf("size\t%ld\n", dll_size(list));
+            }
+            else if(!strcmp(command, "hasNext"))
+            {
+                if(dll_hasNext(list))
+                    puts("yes");
+                else
+                    puts("no");
+            }
+            else if(!strcmp(command, "next"))
+            {
+                Node *next = dll_next(list);
+                printf("next\t%p %d\n", next, next ? *(int*)next->data : -1);
+            }
+            else if(!strcmp(command, "hasPrev"))
+            {
+                if(dll_hasPrev(list))
+                    puts("yes");
+                else
+                    puts("no");
+            }
+            else if(!strcmp(command, "prev"))
+            {
+                Node *prev = dll_prev(list);
+                printf("prev\t%p %d\n", prev, prev ? *(int*)prev->data : -1);
+            }
+            else if(!strcmp(command, "print") || !strcmp(command, "p"))
+            {
+                dll_print(list);
+            }
+            else if(!strcmp(command, "info") || !strcmp(command, "i"))
+            {
+                printf("head\t%p %d\n", list->head, list->head ? *(int*)list->head->data : -1);
+                printf("tail\t%p %d\n", list->tail, list->tail ? *(int*)list->tail->data : -1);
+                printf("curr\t%p %d\n", list->curr, list->curr ? *(int*)list->curr->data : -1);
+                printf("size\t%ld\n", dll_size(list));
+            }
+            else if(!strcmp(command, "reverse"))
+            {
+                dll_reverse(list);
+            }
+            else if(!strcmp(command, "sort"))
+            {
+                dll_sort(list);
+            }
+            else if(!strcmp(command, "popHead") || !strcmp(command, "poh"))
+            {
+                dll_popHead(list);
+            }
+            else if(!strcmp(command, "popTail") || !strcmp(command, "pot"))
+            {
+                dll_popTail(list);
+            }
+            else if(!strcmp(command, "clear"))
+            {
+                clock_t start = clock();
+
+                dll_clear(list);
+
+                double elapsed = ( (double)clock() - start ) / CLOCKS_PER_SEC;
+                printf("Clearing finished in %f s\n", elapsed);
+
+                list = NULL;
+            }
+            else if(!strcmp(command, "show"))
+            {
+                // do absolutely nothing
+            }
+            else
+            {
+                usage();
+            }
+            break;
+        case 2:
+            if(!strcmp(command, "get"))
+            {
                 Node *n = dll_get(list, *d1);
-				printData(n->data);
-			}
+                printData(n->data);
+            }
             else if(!strcmp(command, "pushHead") || !strcmp(command, "puh"))
-			{
-				dll_pushHead(list, a1);
-			}
-			else if(!strcmp(command, "pushTail") || !strcmp(command, "put"))
-			{
-				dll_pushTail(list, a1);
-			}
-			else if(!strcmp(command, "del"))
-			{
-				dll_delete(list, *d1);
-			}
-			else if(!strcmp(command, "find"))
-			{
-				clock_t start = clock();
-				Node *found = dll_search(list, a1, 1);
-				double elapsed = ( (double)clock() - start ) / CLOCKS_PER_SEC;
-				printf("searching finished after %f s\n", elapsed);
-				if(found)
-					printData(found->data);
-				else
-					printf("Node with data %d couldn't be found\n", arg1);
-			}
-			else if(!strcmp(command, "sad"))
-			{
-				dll_searchAndDelete(list, a1, 0);
-			}
-			else if(!strcmp(command, "perform"))
-			{
-				perform(arg1);
-			}
-			else
-			{
-				usage();
-			}
-			break;
-		case 3:
-           	if(!strcmp(command, "set"))
-			{
+            {
+                dll_pushHead(list, a1);
+            }
+            else if(!strcmp(command, "pushTail") || !strcmp(command, "put"))
+            {
+                dll_pushTail(list, a1);
+            }
+            else if(!strcmp(command, "del"))
+            {
+                dll_delete(list, *d1);
+            }
+            else if(!strcmp(command, "find"))
+            {
+                clock_t start = clock();
+                Node *found = dll_search(list, a1, 1);
+                double elapsed = ( (double)clock() - start ) / CLOCKS_PER_SEC;
+                printf("searching finished after %f s\n", elapsed);
+                if(found)
+                    printData(found->data);
+                else
+                    printf("Node with data %d couldn't be found\n", arg1);
+            }
+            else if(!strcmp(command, "sad"))
+            {
+                dll_searchAndDelete(list, a1, 0);
+            }
+            else if(!strcmp(command, "perform"))
+            {
+                perform(arg1);
+            }
+            else
+            {
+                usage();
+            }
+            break;
+        case 3:
+            if(!strcmp(command, "set"))
+            {
                 dll_set(list, *d1, a2);
-			}
+            }
             else if(!strcmp(command, "before"))
-			{
-				Node *n = dll_search(list, a1, 1);
-				if(n)
-					list->curr = dll_addBefore(list, n, a2);
-				else
-					printf("Node with data %d couldn't be found\n", arg1);
-			}
-			else if(!strcmp(command, "after"))
-			{
-				Node *n = dll_search(list, a1, 1);
-				if(n)
-					list->curr = dll_addAfter(list, n, a2);
-				else
-					printf("Node with data %d couldn't be found\n", arg1);
-			}
-			else if(!strcmp(command, "find"))
-			{
-				clock_t start = clock();
-				Node *found = dll_search(list, a1, arg2);
-				double elapsed = ( (double)clock() - start ) / CLOCKS_PER_SEC;
-				printf("Performance finished in %f s\n", elapsed);
-				if(found)
-					printData(found->data);
-				else
-					printf("Node with data %d couldn't be found\n", arg1);
-			}
-			else if(!strcmp(command, "sad"))
-			{
-				dll_searchAndDelete(list, a1, *d2);
-			}
-			else if(!strcmp(command, "fill"))
-			{
-				fill(arg1, arg2);
-			}
-			else
-			{
-				usage();
-			}
-			break;
-		default: usage();
-	}
+            {
+                Node *n = dll_search(list, a1, 1);
+                if(n)
+                    list->curr = dll_addBefore(list, n, a2);
+                else
+                    printf("Node with data %d couldn't be found\n", arg1);
+            }
+            else if(!strcmp(command, "after"))
+            {
+                Node *n = dll_search(list, a1, 1);
+                if(n)
+                    list->curr = dll_addAfter(list, n, a2);
+                else
+                    printf("Node with data %d couldn't be found\n", arg1);
+            }
+            else if(!strcmp(command, "find"))
+            {
+                clock_t start = clock();
+                Node *found = dll_search(list, a1, arg2);
+                double elapsed = ( (double)clock() - start ) / CLOCKS_PER_SEC;
+                printf("Performance finished in %f s\n", elapsed);
+                if(found)
+                    printData(found->data);
+                else
+                    printf("Node with data %d couldn't be found\n", arg1);
+            }
+            else if(!strcmp(command, "sad"))
+            {
+                dll_searchAndDelete(list, a1, *d2);
+            }
+            else if(!strcmp(command, "fill"))
+            {
+                fill(arg1, arg2);
+            }
+            else
+            {
+                usage();
+            }
+            break;
+        default: usage();
+    }
 }
 
 /**
@@ -566,18 +575,18 @@ void executeDll(int nargs, char *command, int arg1, int arg2)
  */
 void parseLine(char *line, size_t *nbytes)
 {
-	int nargs;
-	char command[*nbytes], c;
+    int nargs;
+    char command[*nbytes], c;
 
-	int a1 = 0, a2 = 0;
+    int a1 = 0, a2 = 0;
 
-	nargs = sscanf(line, "%s %d %d", command, &a1, &a2);
+    nargs = sscanf(line, "%s %d %d", command, &a1, &a2);
 
-	executeDll(nargs, command, a1, a2);
+    executeDll(nargs, command, a1, a2);
 
-	nargs = sscanf(line, "%s %c", command, &c);
+    nargs = sscanf(line, "%s %c", command, &c);
 
-	executeGpl(nargs, command, c);
+    executeGpl(nargs, command, c);
 }
 
 /**
@@ -591,29 +600,29 @@ void parseLine(char *line, size_t *nbytes)
  */
 int main(int argc, char const *argv[])
 {
-	size_t bytes_read;
-	size_t nbytes = 8;
+    size_t bytes_read;
+    size_t nbytes = 8;
 
-	char *line = (char *) malloc(nbytes + 1);
+    char *line = (char *) malloc(nbytes + 1);
 
-	puts("---------- doublyLinkedList  Copyright (C) 2012  Marc Zimmermann ----------");
-	puts("This program comes with ABSOLUTELY NO WARRANTY; for details type `show w'.");
-	puts("This is free software, and you are welcome to redistribute it");
-	puts("under certain conditions; type `show c' for details.");
-	puts("");
-	puts("Enter a command:");
+    puts("---------- doublyLinkedList  Copyright (C) 2012  Marc Zimmermann ----------");
+    puts("This program comes with ABSOLUTELY NO WARRANTY; for details type `show w'.");
+    puts("This is free software, and you are welcome to redistribute it");
+    puts("under certain conditions; type `show c' for details.");
+    puts("");
+    puts("Enter a command:");
 
-	while( (bytes_read = getline(&line, &nbytes, stdin)) != -1)
-	{
-		parseLine(line, &bytes_read);
-	}
+    while( (bytes_read = getline(&line, &nbytes, stdin)) != -1)
+    {
+        parseLine(line, &bytes_read);
+    }
 
-	free(d1);
-	free(d2);
+    free(d1);
+    free(d2);
 
-	free(line);
+    free(line);
 
-	dll_clear(list);
+    dll_clear(list);
 
-	return 0;
+    return 0;
 }

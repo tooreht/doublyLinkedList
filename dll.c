@@ -3,12 +3,12 @@
  *
  *  https://github.com/tooreht/doublyLinkedList
  *
- * 	@file   dll.c
- * 	@author Marc Zimmermann (tooreht@gmail.com)
- * 	@date   December, 2012
- * 	@brief  Implementation of a doubly linked list.
+ *  @file   dll.c
+ *  @author Marc Zimmermann (tooreht@gmail.com)
+ *  @date   December, 2012
+ *  @brief  Implementation of a doubly linked list.
  *
- * 	Function implementations of doublyLinkedList.
+ *  Function implementations of doublyLinkedList.
  *
  *  This program is free software: you can redistribute it and/or modify
  *  it under the terms of the GNU General Public License as published by
@@ -32,7 +32,7 @@
 
 #include "dll.h"
 
-/** 
+/**
  * static function definitions
  */
 static Node* dll_createNode(void *data);
@@ -47,19 +47,19 @@ static void dll_freeNode(DLL *list, Node *del);
  */
 DLL* dll_create(void)
 {
-	DLL *new = malloc(sizeof(DLL));
+    DLL *new = malloc(sizeof(DLL));
 
-	if(new)
-	{
-		new->head = new->tail = new->curr = NULL;
-		new->size = 0;
-	}
-	else
-	{
-		puts("ERROR: Out of memory");
-	}
+    if (new)
+    {
+        new->head = new->tail = new->curr = NULL;
+        new->size = 0;
+    }
+    else
+    {
+        puts("ERROR: Out of memory");
+    }
 
-	return new;
+    return new;
 }
 
 /**
@@ -69,12 +69,12 @@ DLL* dll_create(void)
  * @param int (*compareData)(void*, void*): callback function compareData
  * @return void
  */
-void dll_registerCompareData(DLL *list, int (*compareData)(void*, void*) )
+void dll_registerCompareFn(DLL *list, int (*compareData)(void*, void*) )
 {
-	assert(list);
-	assert(compareData);
-	
-	list->compareData = compareData;
+    assert(list);
+    assert(compareData);
+
+    list->compareData = compareData;
 }
 
 /**
@@ -84,12 +84,12 @@ void dll_registerCompareData(DLL *list, int (*compareData)(void*, void*) )
  * @param int (*compareData)(void*, void*): callback function compareData
  * @return void
  */
-void dll_registerFreeData(DLL *list, void (*freeData)(void*) )
+void dll_registerFreeFn(DLL *list, void (*freeData)(void*) )
 {
-	assert(list);
-	assert(freeData);
+    assert(list);
+    assert(freeData);
 
-	list->freeData = freeData;
+    list->freeData = freeData;
 }
 
 /**
@@ -99,12 +99,12 @@ void dll_registerFreeData(DLL *list, void (*freeData)(void*) )
  * @param int (*compareData)(void*, void*): callback function compareData
  * @return void
  */
-void dll_registerPrintData(DLL *list, void (*printData)(void*) )
+void dll_registerPrintFn(DLL *list, void (*printData)(void*) )
 {
-	assert(list);
-	assert(printData);
+    assert(list);
+    assert(printData);
 
-	list->printData = printData;
+    list->printData = printData;
 }
 
 /**
@@ -115,9 +115,9 @@ void dll_registerPrintData(DLL *list, void (*printData)(void*) )
  */
 Node* dll_head(DLL *list)
 {
-	assert(list);
+    assert(list);
 
-	return list->curr = list->head;
+    return list->curr = list->head;
 }
 
 /**
@@ -128,9 +128,9 @@ Node* dll_head(DLL *list)
  */
 Node* dll_tail(DLL *list)
 {
-	assert(list);
+    assert(list);
 
-	return list->curr = list->tail;
+    return list->curr = list->tail;
 }
 
 /**
@@ -141,9 +141,9 @@ Node* dll_tail(DLL *list)
  */
 Node* dll_curr(DLL *list)
 {
-	assert(list);
+    assert(list);
 
-	return list->curr;
+    return list->curr;
 }
 
 /**
@@ -154,9 +154,9 @@ Node* dll_curr(DLL *list)
  */
 unsigned long dll_size(DLL *list)
 {
-	assert(list);
+    assert(list);
 
-	return list->size;
+    return list->size;
 }
 
 /**
@@ -167,15 +167,15 @@ unsigned long dll_size(DLL *list)
  */
 short int dll_hasNext(DLL *list)
 {
-	assert(list);
+    assert(list);
 
-	return list->curr != NULL;
+    return list->curr != NULL;
 }
 
 /**
  * Returns the next node.
  * If the iterator reaches the tail, it returns NULL as next node,
- * then it continues from the head. 
+ * then it continues from the head.
  * Use dll_head to initialize list->curr as head
  *
  * @param DLL *list: pointer to the doubly linked list
@@ -183,14 +183,14 @@ short int dll_hasNext(DLL *list)
  */
 Node* dll_next(DLL *list)
 {
-	assert(list);
+    assert(list);
 
-	if(list->curr && list->curr->next)
-		return list->curr = list->curr->next;
-	else if(list->curr && !list->curr->next)
-		return list->curr = NULL;
-	else
-		return list->curr = list->head;
+    if (list->curr && list->curr->next)
+        return list->curr = list->curr->next;
+    else if (list->curr && !list->curr->next)
+        return list->curr = NULL;
+    else
+        return list->curr = list->head;
 }
 
 /**
@@ -201,15 +201,15 @@ Node* dll_next(DLL *list)
  */
 short int dll_hasPrev(DLL *list)
 {
-	assert(list);
+    assert(list);
 
-	return list->curr != NULL;
+    return list->curr != NULL;
 }
 
 /**
  * Returns the previous node.
  * If the iterator reaches the head, it returns NULL as previous node,
- * then it continues from the tail. 
+ * then it continues from the tail.
  * Use dll_tail to initialize list->curr as tail
  *
  * @param DLL *list: pointer to the doubly linked list
@@ -217,14 +217,14 @@ short int dll_hasPrev(DLL *list)
  */
 Node* dll_prev(DLL *list)
 {
-	assert(list);
+    assert(list);
 
-	if(list->curr && list->curr->prev)
-		return list->curr = list->curr->prev;
-	else if(list->curr && !list->curr->prev)
-		return list->curr = NULL;
-	else
-		return list->curr = list->tail;
+    if (list->curr && list->curr->prev)
+        return list->curr = list->curr->prev;
+    else if (list->curr && !list->curr->prev)
+        return list->curr = NULL;
+    else
+        return list->curr = list->tail;
 }
 
 /**
@@ -237,16 +237,16 @@ Node* dll_prev(DLL *list)
  */
 void dll_traverse(DLL *list, void (*callback)(void*) )
 {
-	assert(list);
-	assert(callback);
+    assert(list);
+    assert(callback);
 
-	Node *n = list->head;
+    Node *n = list->head;
 
-	while(n)
-	{
-		callback(n->data); // or (*callback)(i);
-		n = n->next;
-	}
+    while (n)
+    {
+        callback(n->data); // or (*callback)(i);
+        n = n->next;
+    }
 }
 
 /**
@@ -258,21 +258,21 @@ void dll_traverse(DLL *list, void (*callback)(void*) )
  */
 short int dll_contains(DLL *list, Node *node)
 {
-	assert(list);
+    assert(list);
 
-	if(node && list->size)
-	{
-		Node *n = list->head;
+    if (node && list->size)
+    {
+        Node *n = list->head;
 
-		while(n)
-		{
-			if(n == node)
-				return 1;
-			n = n->next;			
-		}
-	}
+        while (n)
+        {
+            if (n == node)
+                return 1;
+            n = n->next;
+        }
+    }
 
-	return 0;
+    return 0;
 }
 
 /**
@@ -284,30 +284,30 @@ short int dll_contains(DLL *list, Node *node)
  */
 Node* dll_get(DLL *list, unsigned long index)
 {
-   assert(list);
-   assert(index < list->size);
+    assert(list);
+    assert(index < list->size);
 
-   if(index < list->size / 2)
-   {
-       list->curr = list->head;
- 
-       while(index--)
-       {
-           list->curr = list->curr->next;
-       }
-   }
-   else
-   {
-       index = list->size - index - 1;
-       list->curr = list->tail;
+    if (index < list->size / 2)
+    {
+        list->curr = list->head;
 
-       while(index--)
-       {
-           list->curr = list->curr->prev;
-       }
-   }
+        while (index--)
+        {
+            list->curr = list->curr->next;
+        }
+    }
+    else
+    {
+        index = list->size - index - 1;
+        list->curr = list->tail;
 
-   return list->curr;
+        while (index--)
+        {
+            list->curr = list->curr->prev;
+        }
+    }
+
+    return list->curr;
 }
 
 /**
@@ -319,23 +319,23 @@ Node* dll_get(DLL *list, unsigned long index)
  */
 Node* dll_searchHeadToTail(DLL *list, void *data)
 {
-	assert(list);
-	assert(list->compareData);
-	assert(data);
-	
-	Node *n = list->head;
-	
-	if(list->size)
-	{
-		while(n)
-		{
-			if(!list->compareData(n->data, data))
-				return n;
-			n = n->next;			
-		}
-	}
+    assert(list);
+    assert(list->compareData);
+    assert(data);
 
-	return NULL;
+    Node *n = list->head;
+
+    if (list->size)
+    {
+        while (n)
+        {
+            if (!list->compareData(n->data, data))
+                return n;
+            n = n->next;
+        }
+    }
+
+    return NULL;
 }
 
 /**
@@ -347,23 +347,23 @@ Node* dll_searchHeadToTail(DLL *list, void *data)
  */
 Node* dll_searchTailToHead(DLL *list, void *data)
 {
-	assert(list);
-	assert(list->compareData);
-	assert(data);
-	
-	Node *n = list->tail;
-	
-	if(list->size)
-	{
-		while(n)
-		{
-			if(!list->compareData(n->data, data))
-				return n;
-			n = n->prev;			
-		}
-	}
+    assert(list);
+    assert(list->compareData);
+    assert(data);
 
-	return NULL;
+    Node *n = list->tail;
+
+    if (list->size)
+    {
+        while (n)
+        {
+            if (!list->compareData(n->data, data))
+                return n;
+            n = n->prev;
+        }
+    }
+
+    return NULL;
 }
 
 /**
@@ -375,44 +375,44 @@ Node* dll_searchTailToHead(DLL *list, void *data)
  */
 Node* dll_searchHeadAndTail(DLL *list, void *data)
 {
-	assert(list);
-	assert(list->compareData);
-	assert(data);
+    assert(list);
+    assert(list->compareData);
+    assert(data);
 
-	Node *i = list->head, *j = list->tail;
+    Node *i = list->head, *j = list->tail;
 
-	if(list->size)
-	{
-		if(list->size % 2)
-		{
-			do
-			{
-				if(!list->compareData(i->data, data))
-					return i;
-				if(!list->compareData(j->data, data))
-					return j;
+    if (list->size)
+    {
+        if (list->size % 2)
+        {
+            do
+            {
+                if (!list->compareData(i->data, data))
+                    return i;
+                if (!list->compareData(j->data, data))
+                    return j;
 
-				i = i->next;
-				j = j->prev;
-			}
-			while(i->prev != j->next);
-		}
-		else
-		{
-			while(i != j->next)
-			{
-				if(!list->compareData(i->data, data))
-					return i;
-				if(!list->compareData(j->data, data))
-					return j;
+                i = i->next;
+                j = j->prev;
+            }
+            while (i->prev != j->next);
+        }
+        else
+        {
+            while (i != j->next)
+            {
+                if (!list->compareData(i->data, data))
+                    return i;
+                if (!list->compareData(j->data, data))
+                    return j;
 
-				i = i->next;
-				j = j->prev;
-			}
-		}
-	}
+                i = i->next;
+                j = j->prev;
+            }
+        }
+    }
 
-	return NULL;
+    return NULL;
 }
 
 /**
@@ -425,25 +425,25 @@ Node* dll_searchHeadAndTail(DLL *list, void *data)
  */
 Node* dll_search(DLL *list, void *data, short int mode)
 {
-	assert(list);
-	assert(data);
+    assert(list);
+    assert(data);
 
-	Node *search = NULL;
+    Node *search = NULL;
 
-	switch(mode)
-	{
-		case 3:
-			search = dll_searchHeadAndTail(list, data);
-			break;
-		case 2:
-			search = dll_searchTailToHead(list, data);
-			break;
-		case 1:
-		default:
-			search = dll_searchHeadToTail(list, data);
-	}
+    switch (mode)
+    {
+    case 3:
+        search = dll_searchHeadAndTail(list, data);
+        break;
+    case 2:
+        search = dll_searchTailToHead(list, data);
+        break;
+    case 1:
+    default:
+        search = dll_searchHeadToTail(list, data);
+    }
 
-	return list->curr = search;
+    return list->curr = search;
 }
 
 /**
@@ -454,21 +454,21 @@ Node* dll_search(DLL *list, void *data, short int mode)
  */
 Node* dll_createNode(void *data)
 {
-	assert(data);
+    assert(data);
 
-	Node *new = malloc(sizeof(Node));
+    Node *new = malloc(sizeof(Node));
 
-	if (new)
-	{
-		new->data = data;
-		new->prev = new->next = NULL;
-	}
-	else
-	{
-		puts("ERROR: Out of memory");
-	}
+    if (new)
+    {
+        new->data = data;
+        new->prev = new->next = NULL;
+    }
+    else
+    {
+        puts("ERROR: Out of memory");
+    }
 
-	return new;
+    return new;
 }
 
 /**
@@ -480,12 +480,12 @@ Node* dll_createNode(void *data)
  */
 Node* dll_addFirstNode(DLL *list, void *data)
 {
-	assert(list);
-	assert(data);
+    assert(list);
+    assert(data);
 
-	list->size = 1;
+    list->size = 1;
 
-	return list->head = list->tail = list->curr = dll_createNode(data);
+    return list->head = list->tail = list->curr = dll_createNode(data);
 }
 
 /**
@@ -514,27 +514,27 @@ Node* dll_set(DLL *list, unsigned long index, void *data)
  */
 Node* dll_pushHead(DLL *list, void *data)
 {
-	assert(list);
-	assert(data);
+    assert(list);
+    assert(data);
 
-	if(list->head)
-	{
-		Node *new = dll_createNode(data);
+    if (list->head)
+    {
+        Node *new = dll_createNode(data);
 
-		if(new)
-		{
-			Node *tmp = list->head;
-			new->next = tmp;
-			list->head = tmp->prev = new;
-			list->size++;
-		}
+        if (new)
+        {
+            Node *tmp = list->head;
+            new->next = tmp;
+            list->head = tmp->prev = new;
+            list->size++;
+        }
 
-		return list->curr = new;
-	}
-	else
-	{
-		return dll_addFirstNode(list, data);
-	}
+        return list->curr = new;
+    }
+    else
+    {
+        return dll_addFirstNode(list, data);
+    }
 }
 
 /**
@@ -547,27 +547,27 @@ Node* dll_pushHead(DLL *list, void *data)
  */
 Node* dll_pushTail(DLL *list, void *data)
 {
-	assert(list);
-	assert(data);
+    assert(list);
+    assert(data);
 
-	if(list->tail)
-	{
-		Node *new = dll_createNode(data);
+    if (list->tail)
+    {
+        Node *new = dll_createNode(data);
 
-		if(new)
-		{
-			Node *tmp = list->tail;
-			new->prev = tmp;
-			list->tail = tmp->next = new;
-			list->size++;
-		}
+        if (new)
+        {
+            Node *tmp = list->tail;
+            new->prev = tmp;
+            list->tail = tmp->next = new;
+            list->size++;
+        }
 
-		return list->curr = new;
-	}
-	else
-	{
-		return dll_addFirstNode(list, data);
-	}	
+        return list->curr = new;
+    }
+    else
+    {
+        return dll_addFirstNode(list, data);
+    }
 }
 
 /**
@@ -581,30 +581,30 @@ Node* dll_pushTail(DLL *list, void *data)
  */
 Node* dll_addBefore(DLL *list, Node *node, void *data)
 {
-	assert(list);
-	assert(node);
-	assert(data);
+    assert(list);
+    assert(node);
+    assert(data);
 
-	Node *new = NULL;
+    Node *new = NULL;
 
-	if(list->size)
-	{
-		new = dll_createNode(data);
+    if (list->size)
+    {
+        new = dll_createNode(data);
 
-		if(new)
-		{
-			new->next = node;
-			new->prev = node->prev;
-			if(node == list->head)
-				list->head = new;
-			node->prev = new;
-			if(new->prev)
-				new->prev->next = new;
-			list->size++;
-		}
-	}
+        if (new)
+        {
+            new->next = node;
+            new->prev = node->prev;
+            if (node == list->head)
+                list->head = new;
+            node->prev = new;
+            if (new->prev)
+                new->prev->next = new;
+            list->size++;
+        }
+    }
 
-	return list->curr = new;
+    return list->curr = new;
 }
 
 /**
@@ -618,30 +618,30 @@ Node* dll_addBefore(DLL *list, Node *node, void *data)
  */
 Node* dll_addAfter(DLL *list, Node *node, void *data)
 {
-	assert(list);
-	assert(node);
-	assert(data);
+    assert(list);
+    assert(node);
+    assert(data);
 
-	Node *new = NULL;
+    Node *new = NULL;
 
-	if(list->size)
-	{
-		new = dll_createNode(data);
+    if (list->size)
+    {
+        new = dll_createNode(data);
 
-		if(new)
-		{
-			new->prev = node;
-			new->next = node->next;
-			if(node == list->tail)
-				list->tail = new;
-			node->next = new;
-			if(new->next)
-				new->next->prev = new;
-			list->size++;
-		}
-	}
+        if (new)
+        {
+            new->prev = node;
+            new->next = node->next;
+            if (node == list->tail)
+                list->tail = new;
+            node->next = new;
+            if (new->next)
+                new->next->prev = new;
+            list->size++;
+        }
+    }
 
-	return list->curr = new;
+    return list->curr = new;
 }
 
 /**
@@ -652,19 +652,19 @@ Node* dll_addAfter(DLL *list, Node *node, void *data)
  */
 void dll_freeNode(DLL *list, Node *del)
 {
-	assert(list);
-	assert(list->freeData);
+    assert(list);
+    assert(list->freeData);
 
-	if(del && list->size)
-	{
-        if(list->head == list->tail)
+    if (del && list->size)
+    {
+        if (list->head == list->tail)
             list->head = list->tail = NULL;
-        else if(del == list->head)
+        else if (del == list->head)
         {
             list->head = del->next;
             list->head->prev = NULL;
         }
-        else if(del == list->tail)
+        else if (del == list->tail)
         {
             list->tail = del->prev;
             list->tail->next = NULL;
@@ -675,7 +675,7 @@ void dll_freeNode(DLL *list, Node *del)
             del->next->prev = del->prev;
         }
 
-        if(del == list->curr)
+        if (del == list->curr)
             list->curr = NULL;
 
         list->freeData(del->data);
@@ -708,15 +708,15 @@ void dll_delete(DLL *list, unsigned long index)
  */
 void dll_searchAndDelete(DLL *list, void *data, short int mode)
 {
-	assert(list);
-	assert(data);
+    assert(list);
+    assert(data);
 
-	Node *found = dll_search(list, data, mode);
+    Node *found = dll_search(list, data, mode);
 
-	if(found)
-	{
+    if (found)
+    {
         dll_freeNode(list, found);
-	}
+    }
 }
 
 /**
@@ -727,9 +727,9 @@ void dll_searchAndDelete(DLL *list, void *data, short int mode)
  */
 void dll_popHead(DLL *list)
 {
-	assert(list);
+    assert(list);
 
-	dll_freeNode(list, list->head);
+    dll_freeNode(list, list->head);
 }
 
 /**
@@ -740,9 +740,9 @@ void dll_popHead(DLL *list)
  */
 void dll_popTail(DLL *list)
 {
-	assert(list);
+    assert(list);
 
-	dll_freeNode(list, list->tail);
+    dll_freeNode(list, list->tail);
 }
 
 /**
@@ -753,18 +753,18 @@ void dll_popTail(DLL *list)
  */
 void dll_clear(DLL *list)
 {
-	if(list)
-	{
-		Node *n = list->head;
+    if (list)
+    {
+        Node *n = list->head;
 
-		while(n)
-		{
-			Node *del = n;
-			n = n->next;
-			dll_freeNode(list, del);
-		}
-		free(list);
-	}
+        while (n)
+        {
+            Node *del = n;
+            n = n->next;
+            dll_freeNode(list, del);
+        }
+        free(list);
+    }
 }
 
 /**
@@ -775,19 +775,19 @@ void dll_clear(DLL *list)
  */
 void dll_reverse(DLL *list)
 {
-	assert(list);
+    assert(list);
 
-	Node *i = list->head, *j = list->tail;
+    Node *i = list->head, *j = list->tail;
 
-	while(i != j && i != j->next)
-	{
-		void *data = i->data;
-		i->data = j->data;
-		j->data = data;
+    while (i != j && i != j->next)
+    {
+        void *data = i->data;
+        i->data = j->data;
+        j->data = data;
 
-		i = i->next;
-		j = j->prev;
-	}
+        i = i->next;
+        j = j->prev;
+    }
 }
 
 /**
@@ -800,26 +800,26 @@ void dll_reverse(DLL *list)
  */
 void dll_sort(DLL *list)
 {
-	assert(list);
-	assert(list->compareData);
+    assert(list);
+    assert(list->compareData);
 
-	Node *i = list->head, *j, *tmp;
-	while(i)
-	{
-		tmp = j = i;
+    Node *i = list->head, *j, *tmp;
+    while (i)
+    {
+        tmp = j = i;
 
-		while(j)
-		{
-			if(list->compareData(tmp->data, j->data) == 1)
-				tmp = j;
-			j = j->next;
-		}
-		void *data = tmp->data;
-		tmp->data = i->data;
-		i->data = data;
+        while (j)
+        {
+            if (list->compareData(tmp->data, j->data) == 1)
+                tmp = j;
+            j = j->next;
+        }
+        void *data = tmp->data;
+        tmp->data = i->data;
+        i->data = data;
 
-		i = i->next;
-	}
+        i = i->next;
+    }
 }
 
 /**
@@ -830,12 +830,12 @@ void dll_sort(DLL *list)
  */
 void dll_print(DLL *list)
 {
-	assert(list);
-	assert(list->printData);
+    assert(list);
+    assert(list->printData);
 
-	printf("--- head ---\n");
+    printf("--- head ---\n");
 
-	dll_traverse(list, list->printData);
+    dll_traverse(list, list->printData);
 
-	printf("--- tail ---\n");
+    printf("--- tail ---\n");
 }

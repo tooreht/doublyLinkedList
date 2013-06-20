@@ -18,19 +18,27 @@ popHead
 pushTail 1
 popTail
 find 1
-sad 1
 before 1 2
 after 1 2
-fill 1 8
-before 1 0
-after 8 9
+fill 0 9
+before 0 -1
+after 0 10
+clear
+fill 9 0
+before 0 -1
+after 0 10
 clear
 pushHead 1
 pushTail 2
+set 0 2
+set 1 1
 set 1 77
 set 0 33
 get 0
 get 1
+sad 1
+sad 1 3
+sad 3 6
 popHead
 popTail
 perform 10
