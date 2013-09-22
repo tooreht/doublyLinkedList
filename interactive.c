@@ -191,7 +191,7 @@ void executeGpl(int nargs, char *command, char option)
  * @param void* data
  * @return void
  */
-void printData(void *data)
+void printFn(void *data)
 {
     printf("%d\n", *(int *) data);
 }
@@ -202,7 +202,7 @@ void printData(void *data)
  * @param void* data
  * @return void
  */
-void freeData(void *data)
+void freeFn(void *data)
 {
     free(data);
 }
@@ -219,7 +219,7 @@ void freeData(void *data)
  *   0: if first and second are equal
  *   1: if first is lower than second
  */
-int compareData(void *first_arg, void *second_arg)
+int compareFn(void *first_arg, void *second_arg)
 {
     int first = *(int *) first_arg;
     int second = *(int *) second_arg;
@@ -377,9 +377,9 @@ void executeDll(int nargs, char *command, int arg1, int arg2)
     if(!list)
     {
         list = dll_create();
-        dll_registerCompareFn(list, compareData);
-        dll_registerFreeFn(list, freeData);
-        dll_registerPrintFn(list, printData);
+        dll_registerCompareFn(list, compareFn);
+        dll_registerFreeFn(list, freeFn);
+        dll_registerPrintFn(list, printFn);
     }
 
     switch(nargs)
@@ -479,7 +479,7 @@ void executeDll(int nargs, char *command, int arg1, int arg2)
             if(!strcmp(command, "get"))
             {
                 Node *n = dll_get(list, *d1);
-                printData(n->data);
+                printFn(n->data);
             }
             else if(!strcmp(command, "pushHead") || !strcmp(command, "puh"))
             {
@@ -500,7 +500,7 @@ void executeDll(int nargs, char *command, int arg1, int arg2)
                 double elapsed = ( (double)clock() - start ) / CLOCKS_PER_SEC;
                 printf("searching finished after %f s\n", elapsed);
                 if(found)
-                    printData(found->data);
+                    printFn(found->data);
                 else
                     printf("Node with data %d couldn't be found\n", arg1);
             }
@@ -545,7 +545,7 @@ void executeDll(int nargs, char *command, int arg1, int arg2)
                 double elapsed = ( (double)clock() - start ) / CLOCKS_PER_SEC;
                 printf("Performance finished in %f s\n", elapsed);
                 if(found)
-                    printData(found->data);
+                    printFn(found->data);
                 else
                     printf("Node with data %d couldn't be found\n", arg1);
             }

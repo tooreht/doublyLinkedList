@@ -63,7 +63,7 @@
  * @param void* data
  * @return void
  */
-void printData(void *data)
+void printFn(void *data)
 {
     Person *person = (Person *)data;
 
@@ -80,7 +80,7 @@ void printData(void *data)
  * @param void* data
  * @return void
  */
-void freeData(void *data)
+void freeFn(void *data)
 {
     Person *person = (Person *)data;
 
@@ -101,7 +101,7 @@ void freeData(void *data)
  *   0: if first and second are equal
  *   1: if first is lower than second
  */
-int compareData(void *first_arg, void *second_arg)
+int compareFn(void *first_arg, void *second_arg)
 {
     Person *p1 = (Person *)first_arg;
     Person *p2 = (Person *)second_arg;
@@ -159,9 +159,9 @@ int main(int argc, char const *argv[])
 {
     // creating a new list
     DLL *list = dll_create();
-    dll_registerCompareFn(list, compareData);
-    dll_registerFreeFn(list, freeData);
-    dll_registerPrintFn(list, printData);
+    dll_registerCompareFn(list, compareFn);
+    dll_registerFreeFn(list, freeFn);
+    dll_registerPrintFn(list, printFn);
 
     // ask for the number of persons to enter
     puts("How many persons do you like to enter?");
@@ -189,7 +189,7 @@ int main(int argc, char const *argv[])
     // use dll iterator functions in a for loop to print the reversed list
     for(dll_head(list); dll_hasNext(list); dll_next(list))
     {
-        printData(list->curr->data);
+        printFn(list->curr->data);
     }
 
 
@@ -200,7 +200,7 @@ int main(int argc, char const *argv[])
     dll_head(list);
     while(dll_hasNext(list))
     {
-        printData(list->curr->data);
+        printFn(list->curr->data);
         dll_next(list);
     }
 
