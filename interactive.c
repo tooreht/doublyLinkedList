@@ -623,6 +623,10 @@ int main(int argc, char const *argv[])
     free(line);
 
     dll_clear(list);
+    
+    puts("- - - - - -");
+    puts(" -  Bye  - ");
+    puts("- - - - - -");
 
     return 0;
 }

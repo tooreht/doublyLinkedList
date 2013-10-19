@@ -72,5 +72,15 @@ void dll_popHead(DLL *list);
 void dll_popTail(DLL *list);
 void dll_clear(DLL *list);
 void dll_reverse(DLL *list);
+void dll_insertionSort(DLL *list);
+
+// Node* dll_mergeSort(DLL *list, Node *first);
+// Node* dll_split(Node *node);
+// Node* dll_merge(DLL *list, Node *first, Node *second);
+// void dll_sort(DLL *list);
+DLL* dll_mergeSort(DLL *list);
+DLL* dll_split(DLL *list);
+Node* dll_merge(DLL *list, Node *first, Node *second);
 void dll_sort(DLL *list);
+
 void dll_print(DLL *list);
