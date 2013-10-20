@@ -158,7 +158,7 @@ Person* askPersonData()
 int main(int argc, char const *argv[])
 {
     // creating a new list
-    DLL *list = dll_create();
+    dll_t *list = dll_create();
     dll_registerCompareFn(list, compareFn);
     dll_registerFreeFn(list, freeFn);
     dll_registerPrintFn(list, printFn);

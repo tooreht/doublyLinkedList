@@ -35,19 +35,19 @@
 /**
  * static function definitions
  */
-static Node* dll_createNode(void *data);
-static Node* dll_addFirstNode(DLL *list, void *data);
-static void dll_freeNode(DLL *list, Node *del);
+static dll_node_t* dll_createNode(void *data);
+static dll_node_t* dll_addFirstNode(dll_t *list, void *data);
+static void dll_freeNode(dll_t *list, dll_node_t *del);
 
 /**
  * Creates a new doubly linked list.
  *
  * @param void
- * @return DLL*: pointer of new doubly linked list
+ * @return dll_t*: pointer of new doubly linked list
  */
-DLL* dll_create(void)
+dll_t* dll_create(void)
 {
-    DLL *new = malloc(sizeof(DLL));
+    dll_t *new = malloc(sizeof(dll_t));
 
     if (new)
     {
@@ -65,11 +65,11 @@ DLL* dll_create(void)
 /**
  * Registers compareFn callback function on the list.
  *
- * @param DLL *list: pointer to the doubly linked list
+ * @param dll_t *list: pointer to the doubly linked list
  * @param int (*compareFn)(void*, void*): callback function compareFn
  * @return void
  */
-void dll_registerCompareFn(DLL *list, int (*compareFn)(void*, void*) )
+void dll_registerCompareFn(dll_t *list, int (*compareFn)(void*, void*) )
 {
     assert(list);
     assert(compareFn);
@@ -80,11 +80,11 @@ void dll_registerCompareFn(DLL *list, int (*compareFn)(void*, void*) )
 /**
  * Registers freeFn callback function on the list.
  *
- * @param DLL *list: pointer to the doubly linked list
+ * @param dll_t *list: pointer to the doubly linked list
  * @param int (*compareFn)(void*, void*): callback function compareFn
  * @return void
  */
-void dll_registerFreeFn(DLL *list, void (*freeFn)(void*) )
+void dll_registerFreeFn(dll_t *list, void (*freeFn)(void*) )
 {
     assert(list);
     assert(freeFn);
@@ -95,11 +95,11 @@ void dll_registerFreeFn(DLL *list, void (*freeFn)(void*) )
 /**
  * Registers printFn callback function on the list.
  *
- * @param DLL *list: pointer to the doubly linked list
+ * @param dll_t *list: pointer to the doubly linked list
  * @param int (*compareFn)(void*, void*): callback function compareFn
  * @return void
  */
-void dll_registerPrintFn(DLL *list, void (*printFn)(void*) )
+void dll_registerPrintFn(dll_t *list, void (*printFn)(void*) )
 {
     assert(list);
     assert(printFn);
@@ -110,10 +110,10 @@ void dll_registerPrintFn(DLL *list, void (*printFn)(void*) )
 /**
  * Returns the head and sets the current to the head.
  *
- * @param DLL *list: pointer to the doubly linked list
- * @return Node*: tail node
+ * @param dll_t *list: pointer to the doubly linked list
+ * @return dll_node_t*: tail node
  */
-Node* dll_head(DLL *list)
+dll_node_t* dll_head(dll_t *list)
 {
     assert(list);
 
@@ -123,10 +123,10 @@ Node* dll_head(DLL *list)
 /**
  * Returns the tail and sets the current to the tail.
  *
- * @param DLL *list: pointer to the doubly linked list
- * @return Node*: tail node
+ * @param dll_t *list: pointer to the doubly linked list
+ * @return dll_node_t*: tail node
  */
-Node* dll_tail(DLL *list)
+dll_node_t* dll_tail(dll_t *list)
 {
     assert(list);
 
@@ -136,10 +136,10 @@ Node* dll_tail(DLL *list)
 /**
  * Returns the current node.
  *
- * @param DLL *list: pointer to the doubly linked list
- * @return Node*: current node
+ * @param dll_t *list: pointer to the doubly linked list
+ * @return dll_node_t*: current node
  */
-Node* dll_curr(DLL *list)
+dll_node_t* dll_curr(dll_t *list)
 {
     assert(list);
 
@@ -149,10 +149,10 @@ Node* dll_curr(DLL *list)
 /**
  * Returns the size of the doubly linked list.
  *
- * @param DLL *list: pointer to the doubly linked list
+ * @param dll_t *list: pointer to the doubly linked list
  * @return unsigned long: size
  */
-unsigned long dll_size(DLL *list)
+unsigned long dll_size(dll_t *list)
 {
     assert(list);
 
@@ -162,10 +162,10 @@ unsigned long dll_size(DLL *list)
 /**
  * Checks if the doubly linked list has a next node.
  *
- * @param DLL *list: pointer to the doubly linked list
+ * @param dll_t *list: pointer to the doubly linked list
  * @return int: has next
  */
-short int dll_hasNext(DLL *list)
+short int dll_hasNext(dll_t *list)
 {
     assert(list);
 
@@ -178,10 +178,10 @@ short int dll_hasNext(DLL *list)
  * then it continues from the head.
  * Use dll_head to initialize list->curr as head
  *
- * @param DLL *list: pointer to the doubly linked list
- * @return Node*: next node
+ * @param dll_t *list: pointer to the doubly linked list
+ * @return dll_node_t*: next node
  */
-Node* dll_next(DLL *list)
+dll_node_t* dll_next(dll_t *list)
 {
     assert(list);
 
@@ -196,10 +196,10 @@ Node* dll_next(DLL *list)
 /**
  * Checks if the doubly linked list has a previous node.
  *
- * @param DLL *list: pointer to the doubly linked list
+ * @param dll_t *list: pointer to the doubly linked list
  * @return int: has previous
  */
-short int dll_hasPrev(DLL *list)
+short int dll_hasPrev(dll_t *list)
 {
     assert(list);
 
@@ -212,10 +212,10 @@ short int dll_hasPrev(DLL *list)
  * then it continues from the tail.
  * Use dll_tail to initialize list->curr as tail
  *
- * @param DLL *list: pointer to the doubly linked list
- * @return Node*: previous node
+ * @param dll_t *list: pointer to the doubly linked list
+ * @return dll_node_t*: previous node
  */
-Node* dll_prev(DLL *list)
+dll_node_t* dll_prev(dll_t *list)
 {
     assert(list);
 
@@ -231,16 +231,16 @@ Node* dll_prev(DLL *list)
  * Traverses the doubly linked list, while providing
  * the data pointer of each node to a callback function.
  *
- * @param DLL *list: pointer to the doubly linked list
+ * @param dll_t *list: pointer to the doubly linked list
  * @param void (*callback)(void*): callback function
  * @return void
  */
-void dll_traverse(DLL *list, void (*callback)(void*) )
+void dll_traverse(dll_t *list, void (*callback)(void*) )
 {
     assert(list);
     assert(callback);
 
-    Node *n = list->head;
+    dll_node_t *n = list->head;
 
     while (n)
     {
@@ -252,17 +252,17 @@ void dll_traverse(DLL *list, void (*callback)(void*) )
 /**
  * Checks if a node exists in the doubly linked list.
  *
- * @param DLL *list: pointer to the doubly linked list
- * @param Node *node: node to test against
+ * @param dll_t *list: pointer to the doubly linked list
+ * @param dll_node_t *node: node to test against
  * @return int: success
  */
-short int dll_contains(DLL *list, Node *node)
+short int dll_contains(dll_t *list, dll_node_t *node)
 {
     assert(list);
 
     if (node && list->size)
     {
-        Node *n = list->head;
+        dll_node_t *n = list->head;
 
         while (n)
         {
@@ -278,11 +278,11 @@ short int dll_contains(DLL *list, Node *node)
 /**
  * Gets the node at the index.
  *
- * @param DLL *list: pointer to the doubly linked list
+ * @param dll_t *list: pointer to the doubly linked list
  * @param unsigned long index: index
- * @return Node*: pointer to the pushed node
+ * @return dll_node_t*: pointer to the pushed node
  */
-Node* dll_get(DLL *list, unsigned long index)
+dll_node_t* dll_get(dll_t *list, unsigned long index)
 {
     assert(list);
     assert(index < list->size);
@@ -313,17 +313,17 @@ Node* dll_get(DLL *list, unsigned long index)
 /**
  * Searches for data from head to tail.
  *
- * @param DLL *list: pointer to the doubly linked list
+ * @param dll_t *list: pointer to the doubly linked list
  * @param void *data: data pointer
- * @return Node*: pointer to the found node
+ * @return dll_node_t*: pointer to the found node
  */
-Node* dll_searchHeadToTail(DLL *list, void *data)
+dll_node_t* dll_searchHeadToTail(dll_t *list, void *data)
 {
     assert(list);
     assert(list->compareFn);
     assert(data);
 
-    Node *n = list->head;
+    dll_node_t *n = list->head;
 
     if (list->size)
     {
@@ -341,17 +341,17 @@ Node* dll_searchHeadToTail(DLL *list, void *data)
 /**
  * Searches for data from tail to head.
  *
- * @param DLL *list: pointer to the doubly linked list
+ * @param dll_t *list: pointer to the doubly linked list
  * @param void *data: data pointer
- * @return Node*: pointer to the found node
+ * @return dll_node_t*: pointer to the found node
  */
-Node* dll_searchTailToHead(DLL *list, void *data)
+dll_node_t* dll_searchTailToHead(dll_t *list, void *data)
 {
     assert(list);
     assert(list->compareFn);
     assert(data);
 
-    Node *n = list->tail;
+    dll_node_t *n = list->tail;
 
     if (list->size)
     {
@@ -369,17 +369,17 @@ Node* dll_searchTailToHead(DLL *list, void *data)
 /**
  * Searches for data from both, head and tail alternating.
  *
- * @param DLL *list: pointer to the doubly linked list
+ * @param dll_t *list: pointer to the doubly linked list
  * @param void *data: data pointer
- * @return Node*: pointer to the found node
+ * @return dll_node_t*: pointer to the found node
  */
-Node* dll_searchHeadAndTail(DLL *list, void *data)
+dll_node_t* dll_searchHeadAndTail(dll_t *list, void *data)
 {
     assert(list);
     assert(list->compareFn);
     assert(data);
 
-    Node *i = list->head, *j = list->tail;
+    dll_node_t *i = list->head, *j = list->tail;
 
     if (list->size)
     {
@@ -418,17 +418,17 @@ Node* dll_searchHeadAndTail(DLL *list, void *data)
 /**
  * Searches for a node with the specific data. Sets the current node to the found node.
  *
- * @param DLL *list: pointer to the doubly linked list
+ * @param dll_t *list: pointer to the doubly linked list
  * @param void *data: data pointer
  * @param int mode: search mode
- * @return Node*: pointer to the found node
+ * @return dll_node_t*: pointer to the found node
  */
-Node* dll_search(DLL *list, void *data, short int mode)
+dll_node_t* dll_search(dll_t *list, void *data, short int mode)
 {
     assert(list);
     assert(data);
 
-    Node *search = NULL;
+    dll_node_t *search = NULL;
 
     switch (mode)
     {
@@ -450,13 +450,13 @@ Node* dll_search(DLL *list, void *data, short int mode)
  * Creates a new node.
  *
  * @param void *data: data pointer
- * @return Node*: pointer to the new node
+ * @return dll_node_t*: pointer to the new node
  */
-Node* dll_createNode(void *data)
+dll_node_t* dll_createNode(void *data)
 {
     assert(data);
 
-    Node *new = malloc(sizeof(Node));
+    dll_node_t *new = malloc(sizeof(dll_node_t));
 
     if (new)
     {
@@ -474,11 +474,11 @@ Node* dll_createNode(void *data)
 /**
  * Creates the first node of the doubly linked list.
  *
- * @param DLL *list: pointer to the doubly linked list
+ * @param dll_t *list: pointer to the doubly linked list
  * @param void *data: data pointer
- * @return Node*: pointer to the first node
+ * @return dll_node_t*: pointer to the first node
  */
-Node* dll_addFirstNode(DLL *list, void *data)
+dll_node_t* dll_addFirstNode(dll_t *list, void *data)
 {
     assert(list);
     assert(data);
@@ -491,12 +491,12 @@ Node* dll_addFirstNode(DLL *list, void *data)
 /**
  * Sets the node at the index to a specific value.
  *
- * @param DLL *list: pointer to the doubly linked list
+ * @param dll_t *list: pointer to the doubly linked list
  * @param unsigned long index: index
  * @param void *data: data pointer
- * @return Node*: pointer to the pushed node
+ * @return dll_node_t*: pointer to the pushed node
 za */
-Node* dll_set(DLL *list, unsigned long index, void *data)
+dll_node_t* dll_set(dll_t *list, unsigned long index, void *data)
 {
     list->curr = dll_get(list, index);
     list->curr->data = data;
@@ -508,22 +508,22 @@ Node* dll_set(DLL *list, unsigned long index, void *data)
  * Pushs a new node to the head of the doubly linked list.
  * Sets the current node to the new node.
  *
- * @param DLL *list: pointer to the doubly linked list
+ * @param dll_t *list: pointer to the doubly linked list
  * @param void *data: data pointer
- * @return Node*: pointer to the pushed node
+ * @return dll_node_t*: pointer to the pushed node
  */
-Node* dll_pushHead(DLL *list, void *data)
+dll_node_t* dll_pushHead(dll_t *list, void *data)
 {
     assert(list);
     assert(data);
 
     if (list->head)
     {
-        Node *new = dll_createNode(data);
+        dll_node_t *new = dll_createNode(data);
 
         if (new)
         {
-            Node *tmp = list->head;
+            dll_node_t *tmp = list->head;
             new->next = tmp;
             list->head = tmp->prev = new;
             list->size++;
@@ -541,22 +541,22 @@ Node* dll_pushHead(DLL *list, void *data)
  * Pushs a new node to the tail of the doubly linked list.
  * Sets the current node to the new node.
  *
- * @param DLL *list: pointer to the doubly linked list
+ * @param dll_t *list: pointer to the doubly linked list
  * @param void *data: data pointer
- * @return Node*: pointer to the pushed node
+ * @return dll_node_t*: pointer to the pushed node
  */
-Node* dll_pushTail(DLL *list, void *data)
+dll_node_t* dll_pushTail(dll_t *list, void *data)
 {
     assert(list);
     assert(data);
 
     if (list->tail)
     {
-        Node *new = dll_createNode(data);
+        dll_node_t *new = dll_createNode(data);
 
         if (new)
         {
-            Node *tmp = list->tail;
+            dll_node_t *tmp = list->tail;
             new->prev = tmp;
             list->tail = tmp->next = new;
             list->size++;
@@ -574,18 +574,18 @@ Node* dll_pushTail(DLL *list, void *data)
  * Adds a new node before a specific node.
  * Sets the current node to the new node.
  *
- * @param DLL *list: pointer to the doubly linked list
- * @param Node *node: node to add before
+ * @param dll_t *list: pointer to the doubly linked list
+ * @param dll_node_t *node: node to add before
  * @param void *data: data pointer
- * @return Node*: pointer to the added node
+ * @return dll_node_t*: pointer to the added node
  */
-Node* dll_addBefore(DLL *list, Node *node, void *data)
+dll_node_t* dll_addBefore(dll_t *list, dll_node_t *node, void *data)
 {
     assert(list);
     assert(node);
     assert(data);
 
-    Node *new = NULL;
+    dll_node_t *new = NULL;
 
     if (list->size)
     {
@@ -611,18 +611,18 @@ Node* dll_addBefore(DLL *list, Node *node, void *data)
  * Adds a new node after a specific node.
  * Sets the current node to the new node.
  *
- * @param DLL *list: pointer to the doubly linked list
- * @param Node *node: node to add after
+ * @param dll_t *list: pointer to the doubly linked list
+ * @param dll_node_t *node: node to add after
  * @param void *data: data pointer
- * @return Node*: pointer to the added node
+ * @return dll_node_t*: pointer to the added node
  */
-Node* dll_addAfter(DLL *list, Node *node, void *data)
+dll_node_t* dll_addAfter(dll_t *list, dll_node_t *node, void *data)
 {
     assert(list);
     assert(node);
     assert(data);
 
-    Node *new = NULL;
+    dll_node_t *new = NULL;
 
     if (list->size)
     {
@@ -647,10 +647,10 @@ Node* dll_addAfter(DLL *list, Node *node, void *data)
 /**
  * Frees data and the node from memory.
  *
- * @param Node *node: node to free
+ * @param dll_node_t *node: node to free
  * @return void
  */
-void dll_freeNode(DLL *list, Node *del)
+void dll_freeNode(dll_t *list, dll_node_t *del)
 {
     assert(list);
     assert(list->freeFn);
@@ -689,11 +689,11 @@ void dll_freeNode(DLL *list, Node *del)
 /**
  * Deletes the node at the specific index.
  *
- * @param DLL *list: pointer to the doubly linked list
+ * @param dll_t *list: pointer to the doubly linked list
  * @param unsigned long index: index
  * @return void
  */
-void dll_delete(DLL *list, unsigned long index)
+void dll_delete(dll_t *list, unsigned long index)
 {
     dll_freeNode(list, dll_get(list, index));
 }
@@ -701,17 +701,17 @@ void dll_delete(DLL *list, unsigned long index)
 /**
  * Deletes the first node with the specific data from the list.
  *
- * @param DLL *list: pointer to the doubly linked list
+ * @param dll_t *list: pointer to the doubly linked list
  * @param void *data: data pointer
  * @param int mode: search mode
  * @return void
  */
-void dll_searchAndDelete(DLL *list, void *data, short int mode)
+void dll_searchAndDelete(dll_t *list, void *data, short int mode)
 {
     assert(list);
     assert(data);
 
-    Node *found = dll_search(list, data, mode);
+    dll_node_t *found = dll_search(list, data, mode);
 
     if (found)
     {
@@ -722,10 +722,10 @@ void dll_searchAndDelete(DLL *list, void *data, short int mode)
 /**
  * Deletes the first node of the doubly linked list.
  *
- * @param DLL *list: pointer to the doubly linked list
+ * @param dll_t *list: pointer to the doubly linked list
  * @return void
  */
-void dll_popHead(DLL *list)
+void dll_popHead(dll_t *list)
 {
     assert(list);
 
@@ -735,10 +735,10 @@ void dll_popHead(DLL *list)
 /**
  * Deletes the last node of the doubly linked list.
  *
- * @param DLL *list: pointer to the doubly linked list
+ * @param dll_t *list: pointer to the doubly linked list
  * @return void
  */
-void dll_popTail(DLL *list)
+void dll_popTail(dll_t *list)
 {
     assert(list);
 
@@ -748,18 +748,18 @@ void dll_popTail(DLL *list)
 /**
  * Destroys the whole list and frees it from memory.
  *
- * @param DLL *list: pointer to the doubly linked list
+ * @param dll_t *list: pointer to the doubly linked list
  * @return void
  */
-void dll_clear(DLL *list)
+void dll_clear(dll_t *list)
 {
     if (list)
     {
-        Node *n = list->head;
+        dll_node_t *n = list->head;
 
         while (n)
         {
-            Node *del = n;
+            dll_node_t *del = n;
             n = n->next;
             dll_freeNode(list, del);
         }
@@ -770,14 +770,14 @@ void dll_clear(DLL *list)
 /**
  * Reverses the list.
  *
- * @param DLL *list: pointer to the doubly linked list
+ * @param dll_t *list: pointer to the doubly linked list
  * @return void
  */
-void dll_reverse(DLL *list)
+void dll_reverse(dll_t *list)
 {
     assert(list);
 
-    Node *i = list->head, *j = list->tail;
+    dll_node_t *i = list->head, *j = list->tail;
 
     while (i != j && i != j->next)
     {
@@ -795,15 +795,15 @@ void dll_reverse(DLL *list)
  *
  * The order of the nodes is defined through the compareFn function.
  *
- * @param DLL *list: pointer to the doubly linked list
+ * @param dll_t *list: pointer to the doubly linked list
  * @return void
  */
-void dll_sort(DLL *list)
+void dll_sort(dll_t *list)
 {
     assert(list);
     assert(list->compareFn);
 
-    Node *i = list->head, *j, *tmp;
+    dll_node_t *i = list->head, *j, *tmp;
     while (i)
     {
         tmp = j = i;
@@ -825,10 +825,10 @@ void dll_sort(DLL *list)
 /**
  * Prints the list.
  *
- * @param DLL *list: pointer to the doubly linked list
+ * @param dll_t *list: pointer to the doubly linked list
  * @return void
  */
-void dll_print(DLL *list)
+void dll_print(dll_t *list)
 {
     assert(list);
     assert(list->printFn);
